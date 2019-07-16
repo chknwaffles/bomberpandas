@@ -1,5 +1,12 @@
 import React from 'react'
 
 export default function Grid() {
-    return;
+    
+    const generateGrid = () => {
+        
+    }
+    return (
+        <React.Fragment>
+        </React.Fragment>
+    )
 }
