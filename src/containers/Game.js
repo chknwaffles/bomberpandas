@@ -25,7 +25,6 @@ export default function Game() {
     // const [players, setPlayers] = useState({ posX: 10, posY: 10, placedBomb: false })
     const [player, setPlayer] = useState({x: 0, y: 0, placedBomb: false})
     const [grid, setGrid] = useState(initialGrid)
-    const [placedBombs, setPlacedBombs] = useState([])
     const canvasRef = useRef(null)
 
     //need to write custom hook for drawing the grid
@@ -65,14 +64,17 @@ export default function Game() {
 
     }, [player])
 
-    useEffect(() => {
-        const explode = setTimeout(() => {
-            // explode bomb here
-            console.log('BOMB EXPLODED')
-        }, 3000)
+    // set timer for bomb explosion in back end
+    // useEffect(() => {
+    //     const explode = setTimeout(() => {
+    //          explode bomb here
+    //         console.log('BOMB EXPLODED')
+    //         remove bomb from grid and array
+    //         setPlacedBombs(placedBombs.shift())
+    //     }, 3000)
 
-        return () => clearTimeout(explode)
-    }, [placedBombs])
+    //     return () => clearTimeout(explode)
+    // }, [placedBombs])
 
     const movePlayer = (e) => {
         console.log('PRESSED', e.key)
