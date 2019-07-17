@@ -1,5 +1,3 @@
-game {
+.game {
     outline: 1px solid black;
-    width: 800;
-    height: 600;
 }
