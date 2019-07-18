@@ -18,6 +18,7 @@ initialGrid = initialGrid.map((e, i) => {
     })
 })
 
+const ws = new WebSocket('ws://localhost:3000')
 const spriteWidth = 50,
         spriteHeight = 50
 
@@ -25,21 +26,23 @@ export default function Game() {
     // const [players, setPlayers] = useState({ posX: 10, posY: 10, placedBomb: false })
     const [player, setPlayer] = useState({x: 0, y: 0, placedBomb: false})
     const [grid, setGrid] = useState(initialGrid)
-    const [socket, setSocket] = useState()
     const canvasRef = useRef(null)
+
+    useEffect(() => {
+        ws.onopen = () => {
+            console.log('Connected')
+        }
+
+        return () => ws.onclose()
+    }, [])
 
     //need to write custom hook for drawing the grid
     useEffect(() => {
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
 
-        const ws = new WebSocket('ws://localhost:3000')
         let updatedGrid = grid
         
-        ws.onopen = () => {
-            setSocket(ws)
-        }
-
         //listen to backend for player movement/bomb explosion
         ws.onmessage = (e) => {
             console.log("testing data", JSON.parse(e.data))
@@ -110,7 +113,6 @@ export default function Game() {
             context.drawImage(image, 0, 0, 50, 50, player.x, player.y, spriteHeight, spriteWidth)
         }
 
-        return () => ws.close()
     }, [player])
 
     const movePlayer = (e) => {
@@ -175,7 +177,7 @@ export default function Game() {
         setGrid(updatedGrid)
 
         //send to server
-        socket.send(JSON.stringify(bomb))
+        ws.send(JSON.stringify(bomb))
     }
 
     const validMove = (nextMove) => {
