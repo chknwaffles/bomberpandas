@@ -28,24 +28,49 @@ export default function Game() {
     const [socket, setSocket] = useState()
     const canvasRef = useRef(null)
 
-    //component did mount
-    useEffect(() => {
-        const ws = new WebSocket('ws://localhost:3000')
-        ws.onopen = () => {
-            setSocket(ws)
-        }
-
-        ws.onmessage = (e) => {
-            console.log("testing data", JSON.parse(e.data))
-        }
-
-        return () => ws.close()
-    }, [])
-
     //need to write custom hook for drawing the grid
     useEffect(() => {
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
+
+        const ws = new WebSocket('ws://localhost:3000')
+        let updatedGrid = grid
+        
+        ws.onopen = () => {
+            setSocket(ws)
+        }
+
+        //listen to backend for player movement/bomb explosion
+        ws.onmessage = (e) => {
+            console.log("testing data", JSON.parse(e.data))
+            let data = JSON.parse(e.data)
+
+            if (data[0] === 'BOMB TARGETS') {
+                // explode in a radius around the target grid element
+                data.forEach((e, i) => {
+                    if (i !== 0 && e.x >= 0 && e.y >= 0) {
+                        switch(updatedGrid[e.x][e.y]) {
+                            case '': updatedGrid[e.x][e.y] = 'F'; removeFire(e.x, e.y); break
+                            case 'BW': updatedGrid[e.x][e.y] = 'F'; removeFire(e.x, e.y); break
+                            case 'B': updatedGrid[e.x][e.y] = 'F'; removeFire(e.x, e.y); break
+                            default: break
+                        }
+                        console.log(updatedGrid[e.x][e.y])
+                    }
+                })
+
+                setPlayer({ ...player, placedBomb: false })
+                setGrid(updatedGrid)
+            }
+        }
+
+        const removeFire = (x, y) => setTimeout(() => {
+            updatedGrid[x][y] = ''
+            console.log('remove fire')
+            setGrid(updatedGrid)
+            setPlayer({ ...player, placedBomb: false })
+            clearTimeout(removeFire)
+        }, 1500)
 
         //render board
         grid.forEach((e, i) => {
@@ -54,18 +79,19 @@ export default function Game() {
                 switch(e2) {
                     case 'W': {
                         context.fillStyle = 'black'
-                        break;
+                        break
                     }
                     case 'B': {
-                        const image = new Image()
-                        image.src = `${process.env.PUBLIC_URL}/bomb.png`
-                        image.onload = () => {
-                            context.drawImage(image, 0, 0, 50, 50, i * 50, j * 50, spriteHeight, spriteWidth)
-                        }
-                        break;
+                        let source = `${process.env.PUBLIC_URL}/bomb.png`
+                        renderImage(context, source, i, j)
+                        break
                     }
                     case 'BW': {
-                        break;
+                        break
+                    }
+                    case 'F': {
+                        context.fillStyle = 'red'
+                        break
                     }
                     default: {
                         context.fillStyle = 'white'
@@ -84,6 +110,7 @@ export default function Game() {
             context.drawImage(image, 0, 0, 50, 50, player.x, player.y, spriteHeight, spriteWidth)
         }
 
+        return () => ws.close()
     }, [player])
 
     const movePlayer = (e) => {
@@ -121,9 +148,10 @@ export default function Game() {
                 //plant bomb
                 //change grid state to plant bomb
                 e.preventDefault()
-                nextMove = {...player, placedBomb: true }
-
-                plantBomb()
+                if (player.placedBomb === false) {
+                    nextMove = {...player, placedBomb: true }
+                    plantBomb()
+                }
                 break;
             }
             default: break;
@@ -132,15 +160,22 @@ export default function Game() {
         //send to backend 
     }
 
+    const renderImage = (context, source, row, col) => {
+        const image = new Image()
+        image.src = source
+        image.onload = () => {
+            context.drawImage(image, 0, 0, 50, 50, row * 50, col * 50, spriteHeight, spriteWidth)
+        }
+    }
+
     const plantBomb = () => {
-        let bomb = { type: 'Bomb', x: player.x, y: player.y }
+        let bomb = { type: 'bomb', x: player.x, y: player.y }
         let updatedGrid = grid
         updatedGrid[player.x / 50][player.y / 50] = 'B'
         setGrid(updatedGrid)
 
         //send to server
         socket.send(JSON.stringify(bomb))
-        console.log(socket)
     }
 
     const validMove = (nextMove) => {
