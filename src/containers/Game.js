@@ -25,12 +25,25 @@ export default function Game() {
     // const [players, setPlayers] = useState({ posX: 10, posY: 10, placedBomb: false })
     const [player, setPlayer] = useState({x: 0, y: 0, placedBomb: false})
     const [grid, setGrid] = useState(initialGrid)
+    const [socket, setSocket] = useState()
     const canvasRef = useRef(null)
+
+    //component did mount
+    useEffect(() => {
+        const ws = new WebSocket('ws://localhost:3000')
+        ws.onopen = () => {
+            setSocket(ws)
+        }
+
+        ws.onmessage = (e) => {
+            console.log("testing data", JSON.parse(e.data))
+        }
+
+        return () => socket.close()
+    }, [])
 
     //need to write custom hook for drawing the grid
     useEffect(() => {
-        //render new image
-        console.log('rendering')
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
 
@@ -38,17 +51,26 @@ export default function Game() {
         grid.forEach((e, i) => {
             e.forEach((e2, j) => {
                 //render walls
-                if (e2 === 'W') {
-                    context.fillStyle = 'black'
-                    
-                } else if (e2 === 'B') {
-                    const image = new Image()
-                    image.src = `${process.env.PUBLIC_URL}/bomb.png`
-                    image.onload = () => {
-                        context.drawImage(image, 0, 0, 50, 50, i * 50, j * 50, spriteHeight, spriteWidth)
+                switch(e2) {
+                    case 'W': {
+                        context.fillStyle = 'black'
+                        break;
                     }
-                } else {
-                    context.fillStyle = 'white'
+                    case 'B': {
+                        const image = new Image()
+                        image.src = `${process.env.PUBLIC_URL}/bomb.png`
+                        image.onload = () => {
+                            context.drawImage(image, 0, 0, 50, 50, i * 50, j * 50, spriteHeight, spriteWidth)
+                        }
+                        break;
+                    }
+                    case 'BW': {
+                        break;
+                    }
+                    default: {
+                        context.fillStyle = 'white'
+                        break
+                    }
                 }
                 context.fillRect(i * spriteHeight, j * spriteHeight, spriteWidth, spriteHeight)
             })
@@ -63,18 +85,6 @@ export default function Game() {
         }
 
     }, [player])
-
-    // set timer for bomb explosion in back end
-    // useEffect(() => {
-    //     const explode = setTimeout(() => {
-    //          explode bomb here
-    //         console.log('BOMB EXPLODED')
-    //         remove bomb from grid and array
-    //         setPlacedBombs(placedBombs.shift())
-    //     }, 3000)
-
-    //     return () => clearTimeout(explode)
-    // }, [placedBombs])
 
     const movePlayer = (e) => {
         console.log('PRESSED', e.key)
@@ -112,15 +122,25 @@ export default function Game() {
                 //change grid state to plant bomb
                 e.preventDefault()
                 nextMove = {...player, placedBomb: true }
-                let bomb = { x: player.x, y: player.y }
-                let updatedGrid = grid
-                updatedGrid[player.x / 50][player.y / 50] = 'B'
-                setGrid(updatedGrid)
+
+                plantBomb()
+                break;
             }
             default: break;
         }
         setPlayer(nextMove)
         //send to backend 
+    }
+
+    const plantBomb = () => {
+        let bomb = { type: 'Bomb', x: player.x, y: player.y }
+        let updatedGrid = grid
+        updatedGrid[player.x / 50][player.y / 50] = 'B'
+        setGrid(updatedGrid)
+
+        //send to server
+        socket.send(JSON.stringify(bomb))
+        console.log(socket)
     }
 
     const validMove = (nextMove) => {
@@ -140,7 +160,6 @@ export default function Game() {
     }
 
     return (
-        <canvas ref={canvasRef} className='game' width={750} height={650} tabIndex={0} onKeyDown={(e) => movePlayer(e)} >
-        </canvas>
+        <canvas ref={canvasRef} className='game' width={750} height={650} tabIndex={0} onKeyDown={(e) => movePlayer(e)} />
     )
 }
