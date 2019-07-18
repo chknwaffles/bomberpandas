@@ -39,7 +39,7 @@ export default function Game() {
             console.log("testing data", JSON.parse(e.data))
         }
 
-        return () => socket.close()
+        return () => ws.close()
     }, [])
 
     //need to write custom hook for drawing the grid
