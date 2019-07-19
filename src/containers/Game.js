@@ -3,20 +3,7 @@ import '../stylesheets/Game.css'
 import icon from '../images/kys.png'
 
 //initialize grid with empty strings
-let initialGrid = [...Array(15)].map(e => Array(13).fill(''))
 
-//fill the spaces with walls
-// randomize grid later
-initialGrid = initialGrid.map((e, i) => {
-    return e.map((e2, j) => {
-        // if not first row and column and last row/column
-        if ((i !== 0 && j !== 0) && i % 2 !== 0 && j % 2 !== 0) {
-            return 'W'
-        } else {
-            return ''
-        }
-    })
-})
 
 const ws = new WebSocket('ws://localhost:3000')
 const spriteWidth = 50,
@@ -25,7 +12,26 @@ const spriteWidth = 50,
 export default function Game() {
     // const [players, setPlayers] = useState({ posX: 10, posY: 10, placedBomb: false })
     const [player, setPlayer] = useState({x: 0, y: 0, placedBomb: false})
-    const [grid, setGrid] = useState(initialGrid)
+    const [grid, setGrid] = useState(() => {
+        let initialGrid = [...Array(15)].map(e => Array(13).fill(''))
+
+        //fill the spaces with walls
+        // randomize grid later
+        initialGrid = initialGrid.map((e, i) => {
+            return e.map((e2, j) => {
+                // if not first row and column and last row/column
+                if ((i !== 0 && j !== 0) && i % 2 !== 0 && j % 2 !== 0) {
+                    return { type: 'wall'}
+                } else if (i === 0 && j === 0) {
+                    return { type: 'player', x: 0, y: 0, placedBomb: false }
+                } else {
+                    return { type: 'open' }
+                } 
+            })
+        })
+        return initialGrid
+    })
+
     const canvasRef = useRef(null)
 
     //componentdidmount
@@ -57,7 +63,7 @@ export default function Game() {
                     if (i !== 0 && e.x >= 0 && e.y >= 0) {
                         switch(updatedGrid[e.x][e.y]) {
                             case '': updatedGrid[e.x][e.y] = 'F'; removeFire(e.x, e.y); break
-                            case 'BW': updatedGrid[e.x][e.y] = 'F'; removeFire(e.x, e.y); break
+                            case 'BW': updatedGrid[e.x][e.y] = {type: 'F'}; removeFire(e.x, e.y); break
                             case 'B': updatedGrid[e.x][e.y] = 'F'; removeFire(e.x, e.y); break
                             default: break
                         }
@@ -84,20 +90,20 @@ export default function Game() {
         grid.forEach((e, i) => {
             e.forEach((e2, j) => {
                 //render walls
-                switch(e2) {
-                    case 'W': {
+                switch(e2.type) {
+                    case 'wall': {
                         context.fillStyle = 'black'
                         break
                     }
-                    case 'B': {
+                    case 'bomb': {
                         let source = `${process.env.PUBLIC_URL}/bomb.png`
                         renderImage(context, source, i, j)
                         break
                     }
-                    case 'BW': {
+                    case 'breakable wall': {
                         break
                     }
-                    case 'F': {
+                    case 'fire': {
                         context.fillStyle = 'red'
                         break
                     }
@@ -173,7 +179,7 @@ export default function Game() {
     const plantBomb = () => {
         let bomb = { type: 'bomb', x: player.x, y: player.y }
         let updatedGrid = grid
-        updatedGrid[player.x / 50][player.y / 50] = 'B'
+        updatedGrid[player.x / 50][player.y / 50] = bomb
         setGrid(updatedGrid)
 
         //send to server

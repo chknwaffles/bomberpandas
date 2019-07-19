@@ -5,12 +5,13 @@ export default function GameMenu(props) {
     const { changeStatus, changePage } = props
     const [paths, setPaths] = useState([])
     const canvasRef = useRef(null)
-    const buttonSize = [430, 150]
+    
     
     //componentdidmount
     useEffect(() => {
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
+        const buttonSize = [430, 150]
 
         //create paths to check for clicks
         const playPath = new Path2D()
@@ -52,6 +53,7 @@ export default function GameMenu(props) {
                 console.log('Path' + (i + 1) + ' clicked')
                 switch(i) {
                     case 0: changePage('play'); break;
+                    default: break;
                 }
             }
         })
