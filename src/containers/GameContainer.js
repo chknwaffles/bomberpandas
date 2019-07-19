@@ -10,8 +10,7 @@ export default function GameContainer() {
 
     return (
         <React.Fragment>
-            <Game />
-            {/* {status ? <Game /> : <GameMenu changeStatus={changeStatus} />} */}
+            {status ? <Game /> : <GameMenu changeStatus={changeStatus} />}
             <StatusBar />
         </React.Fragment>
     )

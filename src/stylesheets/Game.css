@@ -1,3 +1,8 @@
 .game {
     outline: 1px solid black;
 }
+
+.game-menu {
+    outline: 1px solid black;
+    background: lightskyblue;
+}

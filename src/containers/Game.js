@@ -28,15 +28,18 @@ export default function Game() {
     const [grid, setGrid] = useState(initialGrid)
     const canvasRef = useRef(null)
 
+    //componentdidmount
     useEffect(() => {
         ws.onopen = () => {
             console.log('Connected')
         }
 
+        // when refactoring put ws.onmessage here so its not called everytime
         return () => ws.onclose()
     }, [])
 
     //need to write custom hook for drawing the grid
+    //update on player state
     useEffect(() => {
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
@@ -62,18 +65,20 @@ export default function Game() {
                     }
                 })
 
+                //re render
                 setPlayer({ ...player, placedBomb: false })
                 setGrid(updatedGrid)
             }
         }
 
+        //set timer for removing the fire after explosion
         const removeFire = (x, y) => setTimeout(() => {
             updatedGrid[x][y] = ''
             console.log('remove fire')
             setGrid(updatedGrid)
             setPlayer({ ...player, placedBomb: false })
             clearTimeout(removeFire)
-        }, 1500)
+        }, 1000)
 
         //render board
         grid.forEach((e, i) => {
@@ -106,12 +111,7 @@ export default function Game() {
         })
 
         // render player
-        const image = new Image()
-        image.src = icon
-        image.onload = () => {
-            context.fillStyle = 'white'
-            context.drawImage(image, 0, 0, 50, 50, player.x, player.y, spriteHeight, spriteWidth)
-        }
+        renderImage(context, icon, player.x, player.y)
 
     }, [player])
 
