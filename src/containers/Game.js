@@ -22,7 +22,7 @@ export default function Game() {
                     return { type: 'wall'};
                 } else if (i === 0 && j === 0) {
                     // do some iteration to get all player positions and place them in the initial grid
-                    return { type: 'player', x: 0, y: 0, placedBomb: false };
+                    return { type: 'player', x: 0, y: 0, placedBomb: false, onBomb: false };
                 } else {
                     return { type: 'open' };
                 } 
@@ -64,7 +64,7 @@ export default function Game() {
 
         //set timer for removing the fire after explosion
         const removeFire = (x, y) => setTimeout(() => {
-            updatedGrid[x][y] = '';
+            updatedGrid[x][y].type = 'open';
             console.log('remove fire');
             setGrid(updatedGrid);
             setPlayer({ ...player, placedBomb: false });
@@ -104,16 +104,21 @@ export default function Game() {
                     case 'player': renderImage(context, icon, i, j); break;
                     case 'bomb': {
                         if (player.onBomb) {
-                            renderImage(context, bomb, i, j) // bomb
-                            renderImage(context, icon, i, j) // player
-                            setPlayer({...player, type: 'player', onBomb: false})
+                            renderImage(context, bomb, i, j); // bomb
+                            renderImage(context, icon, i, j); // player
+                            setPlayer({...player, type: 'player', onBomb: false});
+                            console.log(player);
                         } else {
                             renderImage(context, bomb, i, j);
                         }
                         break;
                     }
+                    case 'open': {
+                        context.fillStyle = 'lightskyblue';
+                        context.fillRect(i * SPRITE_SIZE, j * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
+                        break;
+                    }
                     default: {
-                        context.strokeRect(i * SPRITE_SIZE, j * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE)
                         break
                     }
                 }
@@ -166,9 +171,10 @@ export default function Game() {
 
         let updatedGrid = grid.map(e => e.slice())
         updatedGrid[nextMove.x / 50][nextMove.y / 50] = nextMove
-
-        if (!nextMove.onBomb)
-            updatedGrid[player.x / 50][player.y / 50].type = ''
+        let target = updatedGrid[player.x / 50][player.y / 50]
+        console.log('target', target)
+        if (!nextMove.onBomb && !target.onBomb)
+            updatedGrid[player.x / 50][player.y / 50].type = 'open'
 
         setGrid(updatedGrid)
         setPlayer({...nextMove})
