@@ -19,6 +19,8 @@ export default function GameMenu(props) {
         const signUpPath = new Path2D()
         
         //render each button in order: play, login, signup
+        context.lineWidth = 6
+        
         playPath.rect(75, 60, buttonSize[0], buttonSize[1])
         context.strokeStyle = 'red'
         context.strokeRect(75, 60, buttonSize[0], buttonSize[1])
@@ -60,6 +62,8 @@ export default function GameMenu(props) {
     }
 
     return (
-        <canvas id="canvas" className='game-menu' ref={canvasRef} width={500} height={650} onClick={(e) => handleClick(e)}/>
+        <div className='menu-container'>
+            <canvas id="canvas" className='game-menu' ref={canvasRef} width={500} height={650} onClick={(e) => handleClick(e)}/>
+        </div>
     )
 }
