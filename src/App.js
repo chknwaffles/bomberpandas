@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './stylesheets/App.css';
 import GameContainer from './containers/GameContainer'
 import Chat from './containers/Chat'
@@ -7,7 +7,7 @@ function App() {
     return (
         <div className="App">
             <GameContainer />
-        <Chat />
+            <Chat />
         </div>
     );
 }
