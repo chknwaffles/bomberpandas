@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import '../stylesheets/Game.css';
 import icon from '../images/kys.png';
 import bomb from '../images/bomb.png';
+import skull from '../images/skull.png';
 
 const ws = new WebSocket('ws://localhost:3000');
 const SPRITE_SIZE = 50;
@@ -42,30 +43,36 @@ export default function Game() {
             if (data.shift() === 'BOMB TARGETS') {
                 // explode in a radius around the target grid element
                 setGrid(grid => grid.map(row => row.map(colE => {
-                    return data.forEach((e, i) => {
-                        if (i !== 0 && e.x >= 0 && e.y >= 0)
-                            return {...colE, type: 'F'};
-                        else
-                            return colE;
-                    })
+                    let res = data.find(e => e.x === colE.x && e.y === colE.y)
+                    if (res !== undefined && (colE.type === 'O' || colE.type === 'BW' || colE.type === 'F' || colE.type === 'B')) {
+                        return {...colE, type: 'F'}
+                    } else {
+                        return colE
+                    }
                 })))
-                console.log(data);
-                removeFire(data);
+
+                removeFireTimer(data);
             }
         }
 
         //set timer for removing the fire after explosion
-        const removeFire = (data) => setTimeout(() => {
+        const removeFireTimer = (data) => setTimeout(() => {
             setGrid(grid => grid.map(row => row.map(colE => {
-                return data.forEach((e, i) => {
-                    if (i !== 0 && e.x >= 0 && e.y >= 0)
-                        return {...colE, type: 'O'};
-                    else
-                        return colE;
-                })
+                let res = data.find(e => e.x === colE.x && e.y === colE.y)
+                if (res !== undefined) {
+                    if (colE.type !== 'W')
+                        return {...colE, type: 'O'}
+                    else if (colE.type === 'P')
+                        return {...colE, type: 'D'}
+                }
+                
+                return colE
             })))
-            setPlayer(p => p.placedBomb = false);
-            clearTimeout(removeFire);
+            setPlayer(p => {
+                p.placedBomb = false
+                return p
+            });
+            clearTimeout(removeFireTimer);
         }, 1000)
 
         //componentdidunmount
@@ -75,14 +82,13 @@ export default function Game() {
     //need to write custom hook for drawing the grid
     //componentdidupdate on grid state
     useEffect(() => {
-        console.log('rendering grid');
-        
         const canvas = canvasRef.current;
         const context = canvas.getContext('2d');
 
         let updatedGrid = grid.map(e => e.slice());
+        console.log(updatedGrid)
         printGrid(updatedGrid);
-        //render board
+        //render canvas board
         updatedGrid.forEach(row => {
             row.forEach(colE => {
                 switch(colE.type) {
@@ -105,6 +111,7 @@ export default function Game() {
                             setPlayer(p => {
                                 p.type = 'P';
                                 p.onBomb = false;
+                                return p
                             });
                         }
                         
@@ -116,6 +123,7 @@ export default function Game() {
                         context.fillRect(colE.x * SPRITE_SIZE, colE.y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
                         break;
                     }
+                    case 'D': renderImage(context, skull, colE.x, colE.y); break;
                     case 'P': renderImage(context, icon, colE.x, colE.y); break;
                     default: break;
                 }
@@ -126,8 +134,8 @@ export default function Game() {
     const movePlayer = (e) => {
         //set state of player based on key
         //check valid move
-        let nextMove = {...player},
-            prevMove = {...player};
+        let nextMove = {...player, onBomb: false},
+            prevMove = {...player, onBomb: false};
 
         switch(e.key) {
             case 'ArrowUp': e.preventDefault()
@@ -172,17 +180,20 @@ export default function Game() {
             }
             default: return;
         }
-        
-        let updatedGrid = grid.map(e => e.slice());
-        updatedGrid[nextMove.x][nextMove.y] = nextMove
-        updatedGrid[prevMove.x][prevMove.y].type = (prevMove.onBomb) ? 'B' : 'O'
 
-        console.log('before moving');
-        printGrid(updatedGrid);
+        let updatedGrid = grid.map(e => e.slice());
+        updatedGrid[prevMove.x][prevMove.y].type = (prevMove.onBomb) ? 'B' : 'O'
+        updatedGrid[nextMove.x][nextMove.y] = (nextMove.onBomb) ? {...nextMove, type: 'B'} : nextMove
+
         setPlayer(nextMove);
         setGrid(updatedGrid);
         //send to backend for multiplayer
     }
+
+    // just for debugging
+    useEffect(() => {
+        console.log('player status changed', player)
+    }, [player])
 
     const renderImage = (context, source, row, col) => {
         const image = new Image()
@@ -213,6 +224,7 @@ export default function Game() {
             console.log(result)
             result = ''
         })
+        console.log('')
     }
 
     return (
