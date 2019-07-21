@@ -6,7 +6,6 @@ export default function GameMenu(props) {
     const [paths, setPaths] = useState([])
     const canvasRef = useRef(null)
     
-    
     //componentdidmount
     useEffect(() => {
         const canvas = canvasRef.current
@@ -46,9 +45,9 @@ export default function GameMenu(props) {
     const handleClick = (e) => {
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
-        const targetButton = canvas.getBoundingClientRect(),
-                x = e.clientX - targetButton.left,
-                y = e.clientY - targetButton.top
+        const targetButton = canvas.getBoundingClientRect()
+        const x = e.clientX - targetButton.left
+        const y = e.clientY - targetButton.top
 
         paths.forEach((path, i) => {
             if (context.isPointInPath(path, x, y)) {

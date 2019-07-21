@@ -7,7 +7,7 @@ export default function GameContainer(props) {
     const { changePage } = props
     const [status, setStatus] = useState('')
 
-    const changeStatus = () => setStatus('')
+    const changeStatus = (newStatus) => setStatus(newStatus)
 
     return (
         <React.Fragment>

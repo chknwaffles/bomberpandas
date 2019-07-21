@@ -44,8 +44,7 @@ export default function Game() {
 
         //listen to backend for player movement/bomb explosion
         ws.onmessage = (e) => {
-            console.log("testing data", JSON.parse(e.data));
-            let data = JSON.parse(e.data);
+            const data = JSON.parse(e.data);
 
             if (data.shift() === 'BOMB TARGETS') {
                 // explode in a radius around the target grid element
@@ -137,8 +136,8 @@ export default function Game() {
     const movePlayer = (e) => {
         //set state of player based on key
         //check valid move
-        let prevMove = {...player},
-            nextMove = {...player, onBomb: false};
+        let prevMove = {...player};
+        let nextMove = {...player, onBomb: false};
 
         console.log('before move', prevMove)
         switch(e.key) {
@@ -212,9 +211,9 @@ export default function Game() {
     }
 
     const validMove = (nextMove) => {
-        let row = nextMove.x
-        let col = nextMove.y
-        console.log('rows', row, 'col', col)
+        const row = nextMove.x
+        const col = nextMove.y
+
         // if x or y is negative, we can just return false
         if (row < 0 || col < 0 || row > grid.length - 1|| col > grid[0].length - 1) return false
         // if wall then false, check for bombs too
