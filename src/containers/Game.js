@@ -1,147 +1,170 @@
-import React, { useState, useEffect, useRef } from 'react'
-import '../stylesheets/Game.css'
-import icon from '../images/kys.png'
+import React, { useState, useEffect, useRef } from 'react';
+import '../stylesheets/Game.css';
+import icon from '../images/kys.png';
+import bomb from '../images/bomb.png';
+import skull from '../images/skull.png';
 
-//initialize grid with empty strings
-let initialGrid = [...Array(15)].map(e => Array(13).fill(''))
-
-//fill the spaces with walls
-// randomize grid later
-initialGrid = initialGrid.map((e, i) => {
-    return e.map((e2, j) => {
-        // if not first row and column and last row/column
-        if ((i !== 0 && j !== 0) && i % 2 !== 0 && j % 2 !== 0) {
-            return 'W'
-        } else {
-            return ''
-        }
-    })
-})
-
-const ws = new WebSocket('ws://localhost:3000')
-const spriteWidth = 50,
-        spriteHeight = 50
+const ws = new WebSocket('ws://localhost:3000');
+const SPRITE_SIZE = 50;
+const randomizeWalls = (row, col) => {
+    if (row !== 0 && col !== 0) {
+        if (row % 2 === 0 && col % 2 === 0)
+            return { type: 'BW', x: row, y: col }
+    }
+    return { type: 'O', x: row, y: col }
+}
 
 export default function Game() {
     // const [players, setPlayers] = useState({ posX: 10, posY: 10, placedBomb: false })
-    const [player, setPlayer] = useState({x: 0, y: 0, placedBomb: false})
-    const [grid, setGrid] = useState(initialGrid)
-    const canvasRef = useRef(null)
+    const canvasRef = useRef(null);
+    const [player, setPlayer] = useState({ type: 'P', x: 0, y: 0, placedBomb: false, onBomb: false });
+    const [grid, setGrid] = useState(() => {
+        let initialGrid = [...Array(13)].map(e => Array(13).fill(''));
+
+        //fill the spaces with walls and randomize grid later
+        initialGrid = initialGrid.map((rowArr, row) => {
+            return rowArr.map((colItem, col) => {
+                // if not first row and column and last row/column
+                if ((row !== 0 && col !== 0) && row % 2 !== 0 && col % 2 !== 0) {
+                    return { type: 'W', x: row, y: col };
+                } else if (row === 0 && col === 0) {
+                    // do some iteration to get all player positions and place them in the initial grid
+                    return { type: 'P', x: row, y: col, placedBomb: false, onBomb: false };
+                } else {
+                    return randomizeWalls(row, col);
+                } 
+            })
+        })
+        return initialGrid;
+    })
 
     //componentdidmount
     useEffect(() => {
-        ws.onopen = () => {
-            console.log('Connected')
-        }
+        ws.onopen = () => console.log('Connected');
 
-        // when refactoring put ws.onmessage here so its not called everytime
-        return () => ws.onclose()
-    }, [])
-
-    //need to write custom hook for drawing the grid
-    //update on player state
-    useEffect(() => {
-        const canvas = canvasRef.current
-        const context = canvas.getContext('2d')
-
-        let updatedGrid = grid
-        
         //listen to backend for player movement/bomb explosion
         ws.onmessage = (e) => {
-            console.log("testing data", JSON.parse(e.data))
-            let data = JSON.parse(e.data)
+            const data = JSON.parse(e.data);
 
-            if (data[0] === 'BOMB TARGETS') {
+            if (data.shift() === 'BOMB TARGETS') {
                 // explode in a radius around the target grid element
-                data.forEach((e, i) => {
-                    if (i !== 0 && e.x >= 0 && e.y >= 0) {
-                        switch(updatedGrid[e.x][e.y]) {
-                            case '': updatedGrid[e.x][e.y] = 'F'; removeFire(e.x, e.y); break
-                            case 'BW': updatedGrid[e.x][e.y] = 'F'; removeFire(e.x, e.y); break
-                            case 'B': updatedGrid[e.x][e.y] = 'F'; removeFire(e.x, e.y); break
-                            default: break
-                        }
-                        console.log(updatedGrid[e.x][e.y])
+                setGrid(grid => grid.map(row => row.map(colE => {
+                    let res = data.find(e => e.x === colE.x && e.y === colE.y)
+                    if (res !== undefined && (colE.type === 'O' || colE.type === 'BW' || colE.type === 'F' || colE.type === 'B')) {
+                        return {...colE, type: 'F'}
+                    } else {
+                        return colE
                     }
-                })
+                })))
 
-                //re render
-                setPlayer({ ...player, placedBomb: false })
-                setGrid(updatedGrid)
+                removeFireTimer(data);
             }
         }
 
         //set timer for removing the fire after explosion
-        const removeFire = (x, y) => setTimeout(() => {
-            updatedGrid[x][y] = ''
-            console.log('remove fire')
-            setGrid(updatedGrid)
-            setPlayer({ ...player, placedBomb: false })
-            clearTimeout(removeFire)
-        }, 1000)
+        const removeFireTimer = (data) => setTimeout(() => {
+            setGrid(grid => grid.map(row => row.map(colE => {
+                let res = data.find(e => e.x === colE.x && e.y === colE.y)
+                if (res !== undefined) {
+                    if (colE.type !== 'W')
+                        return {...colE, type: 'O'}
+                    else if (colE.type === 'P')
+                        return {...colE, type: 'D'}
+                }
+                
+                return colE
+            })))
+            setPlayer(p => {
+                p.placedBomb = false
+                return p
+            });
+            clearTimeout(removeFireTimer);
+        }, 500)
 
-        //render board
-        grid.forEach((e, i) => {
-            e.forEach((e2, j) => {
-                //render walls
-                switch(e2) {
+        //componentdidunmount
+        return () => {
+            try {
+                ws.onclose();
+            } catch (e) {console.log(e)}
+        }
+    }, [])
+
+    //need to write custom hook for drawing the grid
+    //componentdidupdate on grid state
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const context = canvas.getContext('2d');
+
+        let updatedGrid = grid.map(e => e.slice());
+        printGrid(updatedGrid);
+        //render canvas board
+        updatedGrid.forEach(row => {
+            row.forEach(colE => {
+                switch(colE.type) {
                     case 'W': {
-                        context.fillStyle = 'black'
-                        break
-                    }
-                    case 'B': {
-                        let source = `${process.env.PUBLIC_URL}/bomb.png`
-                        renderImage(context, source, i, j)
-                        break
+                        context.fillStyle = 'black';
+                        context.fillRect(colE.x * SPRITE_SIZE, colE.y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
+                        break;
                     }
                     case 'BW': {
-                        break
+                        context.fillStyle = 'brown';
+                        context.fillRect(colE.x * SPRITE_SIZE, colE.y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
+                        break;
                     }
                     case 'F': {
-                        context.fillStyle = 'red'
-                        break
+                        context.fillStyle = 'red';
+                        context.fillRect(colE.x * SPRITE_SIZE, colE.y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
+                        break;
                     }
-                    default: {
-                        context.fillStyle = 'white'
-                        break
+                    case 'B': {
+                        renderImage(context, bomb, colE.x, colE.y);
+                        break;
                     }
+                    case 'O': {
+                        context.fillStyle = 'lightskyblue';
+                        context.fillRect(colE.x * SPRITE_SIZE, colE.y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
+                        break;
+                    }
+                    case 'D': renderImage(context, skull, colE.x, colE.y); break;
+                    case 'P': renderImage(context, icon, colE.x, colE.y); break;
+                    default: break;
                 }
-                context.fillRect(i * spriteHeight, j * spriteHeight, spriteWidth, spriteHeight)
             })
         })
-
-        // render player
-        renderImage(context, icon, player.x, player.y)
-
-    }, [player])
+    }, [grid])
 
     const movePlayer = (e) => {
-        console.log('PRESSED', e.key)
-        
         //set state of player based on key
         //check valid move
-        let nextMove = player
+        let prevMove = {...player};
+        let nextMove = {...player, onBomb: false};
+
+        console.log('before move', prevMove)
         switch(e.key) {
+            case 'ArrowUp': e.preventDefault()
             case 'w': { // up
-                nextMove = {x: player.x, y: player.y - spriteHeight}
+                nextMove = {...nextMove, x: player.x, y: player.y - 1}
                 if (!validMove(nextMove)) return
 
                 break;
             }
+            case 'ArrowDown': e.preventDefault()
             case 's': { // down
-                nextMove = {...player, y: player.y + spriteHeight}
+                nextMove = {...nextMove, y: player.y + 1}
                 if (!validMove(nextMove)) return
 
                 break;
             }
+            case 'ArrowLeft': e.preventDefault()
             case 'a': { // left
-                nextMove = {...player, x: player.x - spriteWidth}
+                nextMove = {...nextMove, x: player.x - 1}
                 if (!validMove(nextMove)) return
 
                 break;
             }
+            case 'ArrowRight': e.preventDefault()
             case 'd': { // right
-                nextMove = {...player, x: player.x + spriteHeight}
+                nextMove = {...nextMove, x: player.x + 1}
                 if (!validMove(nextMove)) return
 
                 break;
@@ -150,53 +173,70 @@ export default function Game() {
                 //plant bomb
                 //change grid state to plant bomb
                 e.preventDefault()
-                if (player.placedBomb === false) {
-                    nextMove = {...player, placedBomb: true }
-                    plantBomb()
+                if (!player.placedBomb) {
+                    nextMove = { ...nextMove, type: 'P', placedBomb: true, onBomb: true };
+                    //send to backend
+                    let bomb = { type: 'B', x: player.x, y: player.y }
+                    ws.send(JSON.stringify(bomb))
                 }
                 break;
             }
-            default: break;
+            default: return;
         }
-        setPlayer(nextMove)
-        //send to backend 
+
+        let updatedGrid = grid.map(e => e.slice());
+        console.log('prevMove', prevMove)
+        console.log('nextMove', nextMove)
+        // if player was on the bomb before then let's persist that bomb else it's an open space
+        updatedGrid[prevMove.x][prevMove.y].type = (prevMove.onBomb) ? 'B' : 'O'
+        // if next move was planting bomb, we gotta render that bomb
+        updatedGrid[nextMove.x][nextMove.y] = (nextMove.onBomb) ? {...nextMove, type: 'B'} : nextMove
+
+        setPlayer(nextMove);
+        setGrid(updatedGrid);
+        //send to backend for multiplayer
     }
+
+    // just for debugging
+    useEffect(() => {
+        console.log('player status changed', player)
+    }, [player])
 
     const renderImage = (context, source, row, col) => {
         const image = new Image()
         image.src = source
         image.onload = () => {
-            context.drawImage(image, 0, 0, 50, 50, row * 50, col * 50, spriteHeight, spriteWidth)
+            context.drawImage(image, row * 50, col * 50)
         }
     }
 
-    const plantBomb = () => {
-        let bomb = { type: 'bomb', x: player.x, y: player.y }
-        let updatedGrid = grid
-        updatedGrid[player.x / 50][player.y / 50] = 'B'
-        setGrid(updatedGrid)
-
-        //send to server
-        ws.send(JSON.stringify(bomb))
-    }
-
     const validMove = (nextMove) => {
-        // loop through grid and check for open spot and find pos and nextmove
-        // if x or y is negative, we can just return false
-        if (nextMove.x < 0 || nextMove.y < 0) return false
-        if (nextMove.x > 750 || nextMove.y > 650) return false
-        
-        let row = nextMove.x / 50
-        let col = nextMove.y / 50
+        const row = nextMove.x
+        const col = nextMove.y
 
-        // if wall then false 
-        // check for bombs too
-        if (grid[row][col] === 'W' || grid[row][col] === 'B' || grid[row][col] === 'P' || grid[row][col] === 'BW') return false
+        // if x or y is negative, we can just return false
+        if (row < 0 || col < 0 || row > grid.length - 1|| col > grid[0].length - 1) return false
+        // if wall then false, check for bombs too
+        if (grid[row][col].type === 'W' || grid[row][col].type === 'BR' || grid[row][col].type === 'B' || grid[row][col].type === 'P') return false
 
         return true
     }
 
+    const printGrid = (gridMap) => {
+        let result = ''
+        gridMap.forEach(row => {
+            row.forEach(colE => {
+                result += colE.type + '|'
+            })
+            console.log(result)
+            result = ''
+        })
+        console.log('')
+    }
+
     return (
-        <canvas ref={canvasRef} className='game' width={750} height={650} tabIndex={0} onKeyDown={(e) => movePlayer(e)} />
+        <div className='game-container'>
+            <canvas ref={canvasRef} className='game' width={650} height={650} tabIndex={0} onKeyDown={(e) => movePlayer(e)} />
+        </div>
     )
 }

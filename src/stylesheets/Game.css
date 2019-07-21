@@ -3,6 +3,28 @@
 }
 
 .game-menu {
-    outline: 1px solid black;
+    outline: 6px solid black;
     background: lightskyblue;
+}
+
+.game-logo {
+    background: lightskyblue;
+}
+
+.logo-container {
+    position: absolute;
+    left: 39%;
+}
+
+.game-container {
+    position: absolute;
+    background: lightskyblue;
+    top: 80px;
+    left: 35%;
+}
+
+.menu-container {
+    position: absolute;
+    top: 80px;
+    left: 40%;
 }

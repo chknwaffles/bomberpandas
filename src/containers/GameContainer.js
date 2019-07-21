@@ -3,25 +3,16 @@ import GameMenu from '../components/GameMenu'
 import StatusBar from '../components/StatusBar'
 import Game from './Game'
 
-export default function GameContainer() {
-    const [page, setPage] = useState('')
-    const [status, setStatus] = useState(false)
+export default function GameContainer(props) {
+    const { changePage } = props
+    const [status, setStatus] = useState('')
 
-    const changeStatus = () => setStatus(true)
-    const changePage = (newPage) => setPage(newPage)
+    const changeStatus = (newStatus) => setStatus(newStatus)
 
-    const renderPage = () => {
-        switch(page) {
-            case '': return <GameMenu changePage={changePage} />
-            case 'play': return <Game />
-            default: break;
-        }
-    }
     return (
         <React.Fragment>
-            {renderPage()}
-            {/* {status ? <Game /> : <GameMenu changeStatus={changeStatus} changePage={changePage} />} */}
             <StatusBar />
+            {(status === 'ready') ? <Game /> : <GameMenu changeStatus={changeStatus} changePage={changePage} />}
         </React.Fragment>
     )
 }

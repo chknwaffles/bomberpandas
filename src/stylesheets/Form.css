@@ -1,0 +1,8 @@
+.form-container {
+    position: absolute;
+    outline: 3px solid black;
+    padding: 20px;
+    padding-bottom: 50px;
+    top: 90px;
+    left: 46%;
+}

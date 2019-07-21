@@ -5,12 +5,12 @@ export default function GameMenu(props) {
     const { changeStatus, changePage } = props
     const [paths, setPaths] = useState([])
     const canvasRef = useRef(null)
-    const buttonSize = [430, 150]
     
     //componentdidmount
     useEffect(() => {
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
+        const buttonSize = [430, 150]
 
         //create paths to check for clicks
         const playPath = new Path2D()
@@ -18,6 +18,8 @@ export default function GameMenu(props) {
         const signUpPath = new Path2D()
         
         //render each button in order: play, login, signup
+        context.lineWidth = 6
+        
         playPath.rect(75, 60, buttonSize[0], buttonSize[1])
         context.strokeStyle = 'red'
         context.strokeRect(75, 60, buttonSize[0], buttonSize[1])
@@ -43,21 +45,26 @@ export default function GameMenu(props) {
     const handleClick = (e) => {
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
-        const targetButton = canvas.getBoundingClientRect(),
-                x = e.clientX - targetButton.left,
-                y = e.clientY - targetButton.top
+        const targetButton = canvas.getBoundingClientRect()
+        const x = e.clientX - targetButton.left
+        const y = e.clientY - targetButton.top
 
         paths.forEach((path, i) => {
             if (context.isPointInPath(path, x, y)) {
                 console.log('Path' + (i + 1) + ' clicked')
                 switch(i) {
-                    case 0: changePage('play'); break;
+                    case 0: changeStatus('ready'); break;
+                    case 1: changePage('login'); break;
+                    case 2: changePage('signup'); break;
+                    default: break;
                 }
             }
         })
     }
 
     return (
-        <canvas id="canvas" className='game-menu' ref={canvasRef} width={500} height={650} onClick={(e) => handleClick(e)}/>
+        <div className='menu-container'>
+            <canvas id="canvas" className='game-menu' ref={canvasRef} width={500} height={650} onClick={(e) => handleClick(e)}/>
+        </div>
     )
 }
