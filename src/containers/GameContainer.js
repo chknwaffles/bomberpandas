@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import GameMenu from '../components/GameMenu'
 import StatusBar from '../components/StatusBar'
+import FormContainer from './FormContainer'
 import Game from './Game'
 
 export default function GameContainer() {
@@ -14,6 +15,8 @@ export default function GameContainer() {
         switch(page) {
             case '': return <GameMenu changePage={changePage} />
             case 'play': return <Game />
+            case 'login': return <FormContainer login={true} />
+            case 'signup': return <FormContainer login={false} />
             default: break;
         }
     }

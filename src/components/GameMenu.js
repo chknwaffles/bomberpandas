@@ -55,6 +55,8 @@ export default function GameMenu(props) {
                 console.log('Path' + (i + 1) + ' clicked')
                 switch(i) {
                     case 0: changePage('play'); break;
+                    case 1: changePage('login'); break;
+                    case 2: changePage('signup'); break;
                     default: break;
                 }
             }
