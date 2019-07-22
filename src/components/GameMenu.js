@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import '../stylesheets/Game.css'
+import '../stylesheets/GameContainer.css'
 
 export default function GameMenu(props) {
     const { changeStatus, changePage } = props
@@ -18,7 +18,7 @@ export default function GameMenu(props) {
         const signUpPath = new Path2D()
         
         //render each button in order: play, login, signup
-        context.lineWidth = 6
+        context.lineWidth = 4
         
         playPath.rect(75, 60, buttonSize[0], buttonSize[1])
         context.strokeStyle = 'red'
@@ -53,7 +53,7 @@ export default function GameMenu(props) {
             if (context.isPointInPath(path, x, y)) {
                 console.log('Path' + (i + 1) + ' clicked')
                 switch(i) {
-                    case 0: changeStatus('ready'); break;
+                    case 0: changeStatus('waiting'); break;
                     case 1: changePage('login'); break;
                     case 2: changePage('signup'); break;
                     default: break;
@@ -64,7 +64,7 @@ export default function GameMenu(props) {
 
     return (
         <div className='menu-container'>
-            <canvas id="canvas" className='game-menu' ref={canvasRef} width={650} height={650} onClick={(e) => handleClick(e)}/>
+            <canvas id="canvas" className='game-menu' ref={canvasRef} width={650} height={650} onClick={(e) => handleClick(e)} />
         </div>
     )
 }

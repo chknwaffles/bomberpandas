@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { Form, FormInput, Button, Container } from 'shards-react';
+import { Form, FormInput, Container } from 'shards-react';
 import '../stylesheets/Chat.css';
 
 export default function Chat(props) {
-    const { user } = props
+    const { socket, user } = props
     const [log, setLog] = useState(['test'])
     const [message, setMessage] = useState({ username: user, body: '' })
 

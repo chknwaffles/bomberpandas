@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import '../stylesheets/Game.css';
+import '../stylesheets/GameContainer.css';
 import logo from '../images/logo.png'
 
 export default function Logo() {
