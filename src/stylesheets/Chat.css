@@ -1,11 +1,11 @@
-.form-container {
+.chat-container {
+    /* outline: 4px solid black; */
     border: black solid 2px;
     border-radius: 4px;
     box-shadow: 0px 0px 0px 2px black inset;
     padding: 10px;
     position: absolute;
-    top: 80px;
+    top: 737px;
     left: 750px;
-    height: 650px;
     width: 650px;
 }

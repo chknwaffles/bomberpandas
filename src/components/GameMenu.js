@@ -10,7 +10,7 @@ export default function GameMenu(props) {
     useEffect(() => {
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
-        const buttonSize = [430, 150]
+        const buttonSize = [580, 150]
 
         //create paths to check for clicks
         const playPath = new Path2D()
@@ -24,19 +24,19 @@ export default function GameMenu(props) {
         context.strokeStyle = 'red'
         context.strokeRect(75, 60, buttonSize[0], buttonSize[1])
         context.font = '50px Helvetica'
-        context.fillText('play now', 200, 150)
+        context.fillText('play now', 120, 150)
 
         loginPath.rect(75, 240, buttonSize[0], buttonSize[1])
         context.strokeStyle = 'green'
         context.strokeRect(75, 240, buttonSize[0], buttonSize[1])
         context.font = '50px Helvetica'
-        context.fillText('login', 200, 330)
+        context.fillText('login', 120, 330)
 
         signUpPath.rect(75, 420, buttonSize[0], buttonSize[1])
         context.strokeStyle = 'yellow'
         context.strokeRect(75, 420, buttonSize[0], buttonSize[1])
         context.font = '50px Helvetica'
-        context.fillText('signup', 200, 500)
+        context.fillText('signup', 120, 500)
 
         // set paths array
         setPaths([playPath, loginPath, signUpPath])
@@ -64,7 +64,7 @@ export default function GameMenu(props) {
 
     return (
         <div className='menu-container'>
-            <canvas id="canvas" className='game-menu' ref={canvasRef} width={500} height={650} onClick={(e) => handleClick(e)}/>
+            <canvas id="canvas" className='game-menu' ref={canvasRef} width={650} height={650} onClick={(e) => handleClick(e)}/>
         </div>
     )
 }

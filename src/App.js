@@ -14,17 +14,21 @@ function App() {
     const renderPage = () => {
         switch(page) {
             case '': return <GameContainer changePage={changePage} />
-            case 'login': return <FormContainer login={true} changePage={changePage} />
-            case 'signup': return <FormContainer login={false} changePage={changePage} />
+            case 'login': return <FormContainer login={true} changePage={changePage} handleLogin={handleLogin} />
+            case 'signup': return <FormContainer login={false} changePage={changePage} handleLogin={handleLogin} />
             default: break;
         }
+    }
+
+    const handleLogin = () => {
+
     }
 
     return (
         <div className="App">
             <Logo />
             {renderPage()}
-            <Chat />
+            <Chat user={user} />
         </div>
     );
 }
