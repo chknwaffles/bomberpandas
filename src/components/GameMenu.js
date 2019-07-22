@@ -51,9 +51,8 @@ export default function GameMenu(props) {
 
         paths.forEach((path, i) => {
             if (context.isPointInPath(path, x, y)) {
-                console.log('Path' + (i + 1) + ' clicked')
                 switch(i) {
-                    case 0: changeStatus('waiting'); break;
+                    case 0: changeStatus('ready'); break;
                     case 1: changePage('login'); break;
                     case 2: changePage('signup'); break;
                     default: break;

@@ -31,7 +31,7 @@ export default function GameContainer(props) {
                     <React.Fragment>
                         <StatusBar />
                         <Game socket={socket} user={user} />
-                        <Chat user={user} />
+                        <Chat socket={socket} user={user} />
                     </React.Fragment>
                 )
             }

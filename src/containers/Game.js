@@ -202,7 +202,7 @@ export default function Game(props) {
         // if x or y is negative, we can just return false
         // if wall then false, check for bombs too
         if (row < 0 || col < 0 || row > grid.length - 1|| col > grid[0].length - 1) return false
-        if (grid[row][col].type === 'W' || grid[row][col].type === 'BR' || grid[row][col].type === 'B' || grid[row][col].type === 'P') return false
+        if (grid[row][col].type === 'W' || grid[row][col].type === 'BW' || grid[row][col].type === 'B' || grid[row][col].type === 'P') return false
 
         return true
     }
