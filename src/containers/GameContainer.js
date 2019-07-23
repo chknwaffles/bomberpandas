@@ -13,13 +13,6 @@ export default function GameContainer(props) {
     useEffect(() => {
         const ws = new WebSocket('ws://localhost:3000')
         setSocket(ws)
-
-        //componentdidunmount
-        return () => {
-            try {
-                ws.onclose();
-            } catch (e) {console.log(e)}
-        }
     }, [])
 
     const changeStatus = (newStatus) => setStatus(newStatus)
@@ -31,7 +24,7 @@ export default function GameContainer(props) {
                     <React.Fragment>
                         <StatusBar />
                         <Game socket={socket} user={user} />
-                        <Chat socket={socket} user={user} />
+                        {/* <Chat socket={socket} user={user} /> */}
                     </React.Fragment>
                 )
             }
@@ -39,7 +32,7 @@ export default function GameContainer(props) {
                 return (
                     <React.Fragment>
                         <WaitingRoom user={user} changeStatus={changeStatus} />
-                        <Chat socket={socket} user={user} />
+                        {/* <Chat socket={socket} user={user} /> */}
                     </React.Fragment>
                 )
             }

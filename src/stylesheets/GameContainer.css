@@ -1,7 +1,7 @@
 .menu-container {
     position: absolute;
     top: 80px;
-    left: 750px;
+    left: 500px;
     width: 650px;
     height: 650px;
 }
@@ -10,7 +10,7 @@
     position: absolute;
     background: lightskyblue;
     top: 80px;
-    left: 750px;
+    left: 500px;
     width: 650px;
     height: 650px;
 }
@@ -23,7 +23,7 @@
 .room-container {
     position: absolute;
     top: 80px;
-    left: 750px;
+    left: 500px;
     width: 650px;
     height: 650px;
 }

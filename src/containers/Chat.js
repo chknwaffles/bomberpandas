@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { Form, FormInput, Container } from 'shards-react';
-import '../stylesheets/Chat.css';
+import { Card, Form, Icon, Input } from 'antd'
+import '../stylesheets/Chat.css'
+import 'antd/dist/antd.css'
 
 export default function Chat(props) {
     const { socket, user } = props
     const [log, setLog] = useState([])
     const [message, setMessage] = useState({ username: user, body: '' })
+
+    useEffect(() => {
+        const ws = new WebSocket('ws://localhost:3002')
+
+    }, [])
 
     useEffect(() => {
         console.log(socket)
@@ -28,14 +34,14 @@ export default function Chat(props) {
 
     return (
         <div className='chat-container'>
-            <Container>
+            <Card>
                 <React.Fragment>
                         {log.map(message => `${message.username}: ${message.body}`)}
                         <Form onSubmit={(e) => handleSubmit(e)} >
-                            <FormInput onChange={(e) => handleChange(e)} value={message.body} placeholder='Talk shit here' />
+                            <Input onChange={(e) => handleChange(e)} value={message.body} placeholder='Talk shit here' />
                         </Form>
                 </React.Fragment>
-            </Container>
+            </Card>
         </div>
     )
 }

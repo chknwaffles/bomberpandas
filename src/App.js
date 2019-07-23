@@ -13,16 +13,46 @@ function App() {
     const renderPage = () => {
         switch(page) {
             case '': return <GameContainer user={user} changePage={changePage} />
-            case 'login': return <FormContainer login={true} changePage={changePage} handleLogin={handleLogin} />
-            case 'signup': return <FormContainer login={false} changePage={changePage} handleLogin={handleLogin} />
+            case 'login': return <FormContainer login={true} changePage={changePage} handleForm={handleLogin} />
+            case 'signup': return <FormContainer login={false} changePage={changePage} handleForm={handleSignUp} />
             case 'profile': break;
             case 'about': break;
             default: break;
         }
     }
 
-    const handleLogin = () => {
-        
+    const handleLogin = (fields) => {
+        fetch('http://localhost:4000/login', {
+            method: 'POST',
+            body: JSON.stringify(fields),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(r => r.json())
+        .then(data => {
+            setUser(data.username)
+            setPage('')
+        })
+        .catch(err => {
+            console.error(err)
+        })
+    }
+
+    const handleSignUp = (fields) => {
+        fetch('http://localhost:4000/register', {
+            method: 'POST',
+            body: JSON.stringify(fields),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(r => r.json())
+        .then(data => {
+            console.log('sign up successful')
+            setUser(data.username)
+            setPage('')
+        })
     }
 
     return (
