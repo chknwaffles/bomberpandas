@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import '../stylesheets/GameContainer.css'
 
 export default function GameMenu(props) {
-    const { changeStatus, changePage } = props
+    const { user, changeStatus, changePage } = props
     const [paths, setPaths] = useState([])
     const canvasRef = useRef(null)
     
@@ -30,13 +30,13 @@ export default function GameMenu(props) {
         context.strokeStyle = 'green'
         context.strokeRect(75, 240, buttonSize[0], buttonSize[1])
         context.font = '50px Helvetica'
-        context.fillText('login', 120, 330)
+        context.fillText((user === '') ? 'login' : 'profile', 120, 330)
 
         signUpPath.rect(75, 420, buttonSize[0], buttonSize[1])
         context.strokeStyle = 'yellow'
         context.strokeRect(75, 420, buttonSize[0], buttonSize[1])
         context.font = '50px Helvetica'
-        context.fillText('signup', 120, 500)
+        context.fillText((user === '') ? 'signup' : 'logout', 120, 500)
 
         // set paths array
         setPaths([playPath, loginPath, signUpPath])
@@ -53,8 +53,15 @@ export default function GameMenu(props) {
             if (context.isPointInPath(path, x, y)) {
                 switch(i) {
                     case 0: changeStatus('ready'); break;
-                    case 1: changePage('login'); break;
-                    case 2: changePage('signup'); break;
+                    case 1: changePage((user === '') ? 'login' : 'profile'); break;
+                    case 2: {
+                        if (user === '') 
+                            changePage('signup');
+                        //else
+                            //log user out
+                    
+                        break;
+                    }
                     default: break;
                 }
             }
