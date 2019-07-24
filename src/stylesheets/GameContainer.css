@@ -1,0 +1,61 @@
+.menu-container {
+    position: relative;
+    top: 80px;
+    /* left: 500px;
+    width: 650px;
+    height: 650px; */
+}
+
+.game-container {
+    /* position: absolute; */
+    position: relative;
+    background: lightskyblue;
+    top: 80px;
+    /* left: 500px;
+    width: 650px;
+    height: 650px; */
+}
+
+.logo-container {
+    position: absolute;
+    left: 39%;
+}
+
+/* .room-container {
+    position: absolute;
+    top: 80px;
+    left: 500px;
+    width: 650px;
+    height: 650px;
+} */
+
+.endgame-screen {
+    border: black solid 2px;
+    border-radius: 4px;
+    box-shadow: 0px 0px 0px 2px black inset;
+    position: relative;
+    top: 80px;
+}
+.game-menu {
+    border: black solid 2px;
+    border-radius: 4px;
+    box-shadow: 0px 0px 0px 2px black inset;
+    background: lightskyblue;
+}
+
+.game {
+    outline: black solid 3px;
+}
+
+.game-logo {
+    background: lightskyblue;
+}
+
+.waiting-room {
+    background: lightskyblue;
+    border: black solid 2px;
+    border-radius: 4px;
+    box-shadow: 0px 0px 0px 2px black inset;
+}
+
+

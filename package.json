@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "antd": "^3.20.5",
     "konva": "^3.4.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-konva": "^16.8.7-3",
-    "react-scripts": "3.0.1",
-    "shards-react": "^1.0.3"
+    "react-scripts": "3.0.1"
   },
   "scripts": {
     "start": "PORT=3001 react-scripts start",
