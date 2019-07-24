@@ -8,7 +8,7 @@ import skull from '../images/skull.png';
 const SPRITE_SIZE = 50;
 
 export default function Game(props) {
-    const { socket, user } = props
+    const { socket, user, changeStatus } = props
     const canvasRef = useRef(null);
     const [player, setPlayer] = useState({ type: 'P', x: 0, y: 0, placedBomb: false, onBomb: false, username: user });
     const [grid, setGrid] = useState(() => {
@@ -59,10 +59,11 @@ export default function Game(props) {
             setGrid(grid => grid.map(row => row.map(colE => {
                 let res = data.find(e => e.x === colE.x && e.y === colE.y)
                 if (res !== undefined) {
-                    if (colE.type !== 'W')
-                        return {...colE, type: 'O'}
-                    else if (colE.type === 'P')
+                    if (colE.type === 'P') {
                         return {...colE, type: 'D'}
+                    } else if (colE.type !== 'W') {
+                        return {...colE, type: 'O'}
+                    }
                 }
                 
                 return colE
@@ -77,7 +78,7 @@ export default function Game(props) {
 
     //need to write custom hook for drawing the grid
     //componentdidupdate on grid state
-    useEffect(() => {
+    useEffect((props) => {
         const canvas = canvasRef.current;
         const context = canvas.getContext('2d');
 
@@ -111,7 +112,11 @@ export default function Game(props) {
                         context.fillRect(colE.x * SPRITE_SIZE, colE.y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
                         break;
                     }
-                    case 'D': renderImage(context, skull, colE.x, colE.y); break;
+                    case 'D': {
+                        renderImage(context, skull, colE.x, colE.y); 
+                        changeStatus('defeat')
+                        break;
+                    }
                     case 'P': renderImage(context, icon, colE.x, colE.y); break;
                     default: break;
                 }
