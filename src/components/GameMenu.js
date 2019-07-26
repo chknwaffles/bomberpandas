@@ -52,7 +52,7 @@ export default function GameMenu(props) {
         paths.forEach((path, i) => {
             if (context.isPointInPath(path, x, y)) {
                 switch(i) {
-                    case 0: changeStatus('ready'); break;
+                    case 0: changeStatus('waiting'); break;
                     case 1: changePage((user === '') ? 'login' : 'profile'); break;
                     case 2: {
                         if (user === '') 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import '../stylesheets/GameContainer.css'
 
 export default function WaitingRoom(props) {
-    const { changeStatus } = props
+    const { user, changeStatus, game } = props
     const canvasRef = useRef(null)
     const [path, setPath] = useState()
 
@@ -14,7 +14,7 @@ export default function WaitingRoom(props) {
         
         context.font = '30px Helvetica'
         context.fillText('waiting for players to connect...', 120, 150)
-        context.fillText('(1/4) players have connected', 120, 200)
+        context.fillText(`(${game.length}/4) players have connected`, 120, 200)
 
         context.lineWidth = 4
         menuPath.rect(75, 480, buttonSize[0], buttonSize[1])
