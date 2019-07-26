@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { randomizeWalls, printGrid } from '../utils/Grid'
+import { gridSize, randomizeWalls, printGrid } from '../utils/Grid'
 import '../stylesheets/GameContainer.css';
 import icon from '../images/kys.png';
 import bomb from '../images/bomb.png';
@@ -12,7 +12,7 @@ export default function Game(props) {
     const canvasRef = useRef(null);
     const [player, setPlayer] = useState({ type: 'P', x: 0, y: 0, placedBomb: false, onBomb: false, username: user });
     const [grid, setGrid] = useState(() => {
-        let initialGrid = [...Array(13)].map(e => Array(13).fill(''));
+        let initialGrid = [...Array(gridSize[0])].map(e => Array(gridSize[1]).fill(''));
 
         //fill the spaces with walls and randomize grid later
         // if not first row and column and last row/column
@@ -78,7 +78,8 @@ export default function Game(props) {
 
     //need to write custom hook for drawing the grid
     //componentdidupdate on grid state
-    useEffect((props) => {
+    useEffect(() => {
+        canvasRef.current.focus()
         const canvas = canvasRef.current;
         const context = canvas.getContext('2d');
 

@@ -14,7 +14,7 @@ export default function WaitingRoom(props) {
         
         context.font = '30px Helvetica'
         context.fillText('waiting for players to connect...', 120, 150)
-        context.fillText(`(${game.length}/4) players have connected`, 120, 200)
+        context.fillText(`(1 / 2) players have connected`, 120, 200)
 
         context.lineWidth = 4
         menuPath.rect(75, 480, buttonSize[0], buttonSize[1])

@@ -21,13 +21,10 @@
     left: 39%;
 }
 
-/* .room-container {
-    position: absolute;
+.room-container {
+    position: relative;
     top: 80px;
-    left: 500px;
-    width: 650px;
-    height: 650px;
-} */
+} 
 
 .endgame-screen {
     border: black solid 2px;

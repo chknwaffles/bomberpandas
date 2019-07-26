@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import '../stylesheets/GameContainer.css'
 
 export default function GameMenu(props) {
-    const { user, changeStatus, changePage } = props
+    const { user, changeStatus, changePage, joinGame } = props
     const [paths, setPaths] = useState([])
     const canvasRef = useRef(null)
     
@@ -52,7 +52,10 @@ export default function GameMenu(props) {
         paths.forEach((path, i) => {
             if (context.isPointInPath(path, x, y)) {
                 switch(i) {
-                    case 0: changeStatus('waiting'); break;
+                    case 0: {
+                        if (user === '') return alert('You must be signed in to play!')
+                        joinGame(); break;
+                    }
                     case 1: changePage((user === '') ? 'login' : 'profile'); break;
                     case 2: {
                         if (user === '') 

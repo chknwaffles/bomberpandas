@@ -10,20 +10,18 @@ export default function GameContainer(props) {
     const { user, changePage } = props
     const [status, setStatus] = useState('')
     const [socket, setSocket] = useState()
-    const [game, setGame] = useState()
+    const [game, setGame] = useState({ status: 'open' })
 
     useEffect(() => {
         const ws = new WebSocket('ws://localhost:4000/play')
         setSocket(ws)
+        ws.onopen = () => console.log('connected to game')
     }, [])
 
-    const changeStatus = (newStatus) => {
-        console.log('new status', newStatus)
-        setStatus(newStatus)
-    }
+    const changeStatus = (newStatus) => setStatus(newStatus)
 
     const joinGame = () => {
-        fetch('http://localhost:4000/play', {
+        fetch('http://localhost:4000/joingame', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -33,9 +31,10 @@ export default function GameContainer(props) {
         .then(r => r.json())
         .then(data => {
             console.log(data)
+            setStatus('waiting')
+            //send to backend so backend can tell the other user we can start! 
+            socket.send(JSON.stringify(data))      
             setGame(data)
-            //send to backend so backend can tell the other user we can start!
-            socket.send(JSON.stringify(game))
         })
     }
 
@@ -44,6 +43,7 @@ export default function GameContainer(props) {
             setStatus('ready')
             setSocket(new WebSocket('ws://localhost:4000/game'))
         }
+        
     }, [game])
 
     const statusCondition = () => {
@@ -58,7 +58,6 @@ export default function GameContainer(props) {
                 )
             }
             case 'waiting': {
-                joinGame()
                 return (
                     <React.Fragment>
                         <WaitingRoom user={user} changeStatus={changeStatus} game={game} />
@@ -76,7 +75,7 @@ export default function GameContainer(props) {
                     <EndGame condition={'victory'} changeStatus={changeStatus} />
                 )
             }
-            default: return <GameMenu user={user} changeStatus={changeStatus} changePage={changePage} />
+            default: return <GameMenu user={user} changeStatus={changeStatus} changePage={changePage} joinGame={joinGame} />
         }
     }
 
