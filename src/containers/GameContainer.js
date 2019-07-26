@@ -40,8 +40,10 @@ export default function GameContainer(props) {
     }
 
     useEffect(() => {
-        if (game.status === 'closed')
+        if (game.status === 'closed') {
             setStatus('ready')
+            setSocket(new WebSocket('ws://localhost:4000/game'))
+        }
     }, [game])
 
     const statusCondition = () => {
