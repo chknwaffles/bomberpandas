@@ -57,14 +57,7 @@ export default function GameMenu(props) {
                         joinGame(); break;
                     }
                     case 1: changePage((user === '') ? 'login' : 'profile'); break;
-                    case 2: {
-                        if (user === '') 
-                            changePage('signup');
-                        //else
-                            //log user out
-                    
-                        break;
-                    }
+                    case 2: changePage((user === '') ? 'signup' : 'logout'); break;
                     default: break;
                 }
             }

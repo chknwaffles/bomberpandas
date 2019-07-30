@@ -7,16 +7,9 @@ import Game from './Game'
 import Chat from './Chat'
 
 export default function GameContainer(props) {
-    const { user, changePage } = props
+    const { user, changePage, socket, setSocket } = props
     const [status, setStatus] = useState('')
-    const [socket, setSocket] = useState()
     const [game, setGame] = useState({ status: 'open' })
-
-    useEffect(() => {
-        const ws = new WebSocket('ws://localhost:4000/play')
-        setSocket(ws)
-        ws.onopen = () => console.log('connected to game')
-    }, [])
 
     const changeStatus = (newStatus) => setStatus(newStatus)
 
@@ -32,18 +25,22 @@ export default function GameContainer(props) {
         .then(data => {
             console.log(data)
             setStatus('waiting')
-            //send to backend so backend can tell the other user we can start! 
-            socket.send(JSON.stringify(data))      
             setGame(data)
+            socket.send(JSON.stringify(data))
         })
     }
 
     useEffect(() => {
         if (game.status === 'closed') {
+            socket.send(JSON.stringify(game))
             setStatus('ready')
             setSocket(new WebSocket('ws://localhost:4000/game'))
+        } else if (game.status === 'waiting') {
+            socket.onmessage = (e) => {
+                const data = JSON.parse(e.data)
+                console.log(data)
+            }
         }
-        
     }, [game])
 
     const statusCondition = () => {
