@@ -35,6 +35,7 @@ function App() {
         })
         .then(r => r.json())
         .then(data => {
+            console.log(data)
             setUser(data.username)
             setPage('')
             setSocket(new WebSocket('ws://localhost:4000/play'))

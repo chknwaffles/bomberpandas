@@ -1,18 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react'
 import { gridSize, randomizeWalls, printGrid } from '../utils/Grid'
-import '../stylesheets/GameContainer.css';
-import icon from '../images/kys.png';
-import bomb from '../images/bomb.png';
-import skull from '../images/skull.png';
+import '../stylesheets/GameContainer.css'
+import icon from '../images/kys.png'
+import bomb from '../images/bomb.png'
+import skull from '../images/skull.png'
 
 const SPRITE_SIZE = 50;
 
 export default function Game(props) {
-    const { socket, user, changeStatus } = props
-    const canvasRef = useRef(null);
-    const [player, setPlayer] = useState({ type: 'P', x: 0, y: 0, placedBomb: false, onBomb: false, username: user });
+    const { socket, user, changeStatus, online } = props
+    const canvasRef = useRef(null)
+    const [player, setPlayer] = useState(() => {
+        return { type: 'P', x: 0, y: 0, placedBomb: false, onBomb: false, username: user }
+    })
     const [grid, setGrid] = useState(() => {
-        let initialGrid = [...Array(gridSize[0])].map(e => Array(gridSize[1]).fill(''));
+        let initialGrid = [...Array(gridSize[0])].map(e => Array(gridSize[1]).fill(''))
 
         //fill the spaces with walls and randomize grid later
         // if not first row and column and last row/column
@@ -20,15 +22,15 @@ export default function Game(props) {
         initialGrid = initialGrid.map((rowArr, row) => {
             return rowArr.map((colItem, col) => {
                 if ((row !== 0 && col !== 0) && row % 2 !== 0 && col % 2 !== 0) {
-                    return { type: 'W', x: row, y: col };
+                    return { type: 'W', x: row, y: col }
                 } else if (row === 0 && col === 0) {
-                    return { type: 'P', x: row, y: col, placedBomb: false, onBomb: false };
+                    return { type: 'P', x: row, y: col, placedBomb: false, onBomb: false }
                 } else {
-                    return randomizeWalls(row, col);
+                    return randomizeWalls(row, col)
                 } 
             })
         })
-        return initialGrid;
+        return initialGrid
     })
 
     //componentdidmount

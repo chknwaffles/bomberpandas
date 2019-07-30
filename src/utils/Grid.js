@@ -1,4 +1,5 @@
 export const gridSize = [13, 13]
+
 export const printGrid = (gridMap) => {
     let result = ''
     gridMap.forEach(row => {
@@ -18,3 +19,5 @@ export const randomizeWalls = (row, col) => {
     }
     return { type: 'O', x: row, y: col }
 }
+
+

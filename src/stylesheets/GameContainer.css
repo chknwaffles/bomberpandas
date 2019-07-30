@@ -1,6 +1,5 @@
 .menu-container {
     position: relative;
-    top: 80px;
     /* left: 500px;
     width: 650px;
     height: 650px; */
@@ -10,20 +9,18 @@
     /* position: absolute; */
     position: relative;
     background: lightskyblue;
-    top: 80px;
     /* left: 500px;
     width: 650px;
     height: 650px; */
 }
 
 .logo-container {
-    position: absolute;
-    left: 39%;
+    position: static;
+    /* left: 39%; */
 }
 
 .room-container {
     position: relative;
-    top: 80px;
 } 
 
 .endgame-screen {
@@ -31,7 +28,6 @@
     border-radius: 4px;
     box-shadow: 0px 0px 0px 2px black inset;
     position: relative;
-    top: 80px;
 }
 .game-menu {
     border: black solid 2px;

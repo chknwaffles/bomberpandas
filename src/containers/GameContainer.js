@@ -30,6 +30,11 @@ export default function GameContainer(props) {
         })
     }
 
+    const playGame = () => {
+        setStatus('local')
+        setSocket(new WebSocket('ws://localhost:4000/game'))
+    }
+
     useEffect(() => {
         if (game.status === 'closed') {
             socket.send(JSON.stringify(game))
@@ -45,11 +50,11 @@ export default function GameContainer(props) {
 
     const statusCondition = () => {
         switch(status) {
-            case 'ready': {
+            case 'online': {
                 return (
                     <React.Fragment>
                         <StatusBar />
-                        <Game socket={socket} user={user} changeStatus={changeStatus} />
+                        <Game socket={socket} user={user} changeStatus={changeStatus} online={true} />
                         {/* <Chat socket={socket} user={user} /> */}
                     </React.Fragment>
                 )
@@ -72,7 +77,16 @@ export default function GameContainer(props) {
                     <EndGame condition={'victory'} changeStatus={changeStatus} />
                 )
             }
-            default: return <GameMenu user={user} changeStatus={changeStatus} changePage={changePage} joinGame={joinGame} />
+            case 'local': {
+                return (
+                    <React.Fragment>
+                        <StatusBar />
+                        <Game socket={socket} user={user} changeStatus={changeStatus} online={false} />
+                        {/* <Chat socket={socket} user={user} /> */}
+                    </React.Fragment>
+                )
+            }
+            default: return <GameMenu user={user} changeStatus={changeStatus} changePage={changePage} joinGame={joinGame} playGame={playGame} />
         }
     }
 
