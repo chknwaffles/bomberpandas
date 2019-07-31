@@ -141,20 +141,11 @@ export default function Game(props) {
             let valid = validMove(nextP1Move)
             if (!valid.status) return
             
-            if (valid.type === 'bombs')
-                nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, bombs: nextP1Move.bombs + 1 }}
-            else if (valid.type === 'fire')
-                nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, fire: nextP1Move.fire + 1 }}
         }
         if (keys['s']) {
             nextP1Move = {...nextP1Move, y: nextP1Move.y + 1}
             let valid = validMove(nextP1Move)
             if (!valid.status) return
-            
-            if (valid.type === 'bombs')
-                nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, bombs: nextP1Move.bombs + 1 }}
-            else if (valid.type === 'fire')
-                nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, fire: nextP1Move.fire + 1 }}
 
         }
         if (keys['a']) {
@@ -162,28 +153,18 @@ export default function Game(props) {
             let valid = validMove(nextP1Move)
             if (!valid.status) return
             
-            if (valid.type === 'bombs')
-                nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, bombs: nextP1Move.bombs + 1 }}
-            else if (valid.type === 'fire')
-                nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, fire: nextP1Move.fire + 1 }}
-
         }
         if (keys['d']) {
             nextP1Move = {...nextP1Move, x: nextP1Move.x + 1}
             let valid = validMove(nextP1Move)
             if (!valid.status) return
             
-            if (valid.type === 'bombs')
-                nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, bombs: nextP1Move.bombs + 1 }}
-            else if (valid.type === 'fire')
-                nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, fire: nextP1Move.fire + 1 }}
-
         } 
         if (keys[' ']) {
             if (nextP1Move.bombs !== 0) {
                 nextP1Move = { ...nextP1Move, type: 'P', bombs: nextP1Move.bombs - 1, onBomb: true }
                 //send to backend
-                let bomb = { type: 'B', x: nextP1Move.x, y: nextP1Move.y }
+                let bomb = { type: 'B', x: nextP1Move.x, y: nextP1Move.y, powerups: { ...nextP1Move.powerups } }
                 socket.send(JSON.stringify(bomb))
             }
         }
@@ -191,67 +172,51 @@ export default function Game(props) {
             nextP2Move = { ...nextP2Move, y: nextP2Move.y - 1}
             let valid = validMove(nextP2Move)
             if (!valid.status) return
-            
-            if (valid.type === 'bombs')
-                nextP2Move = { ...nextP2Move, powerups: {...nextP2Move.powerups, bombs: nextP2Move.bombs + 1 }}
-            else if (valid.type === 'fire')
-                nextP2Move = { ...nextP2Move, powerups: {...nextP2Move.powerups, fire: nextP2Move.fire + 1 }}
 
         }
         if (keys['ArrowDown']) {
             nextP2Move = { ...nextP2Move, y: nextP2Move.y + 1}
             let valid = validMove(nextP2Move)
             if (!valid.status) return
-            
-            if (valid.type === 'bombs')
-                nextP2Move = { ...nextP2Move, powerups: {...nextP2Move.powerups, bombs: nextP2Move.bombs + 1 }}
-            else if (valid.type === 'fire')
-                nextP2Move = { ...nextP2Move, powerups: {...nextP2Move.powerups, fire: nextP2Move.fire + 1 }}
 
         }
         if (keys['ArrowLeft']) {
             nextP2Move = { ...nextP2Move, x: nextP2Move.x - 1}
             let valid = validMove(nextP2Move)
             if (!valid.status) return
-            
-            if (valid.type === 'bombs')
-                nextP2Move = { ...nextP2Move, powerups: {...nextP2Move.powerups, bombs: nextP2Move.bombs + 1 }}
-            else if (valid.type === 'fire')
-                nextP2Move = { ...nextP2Move, powerups: {...nextP2Move.powerups, fire: nextP2Move.fire + 1 }}
 
         }
         if (keys['ArrowRight']) {
             nextP2Move = { ...nextP2Move, x: nextP2Move.x + 1}
             let valid = validMove(nextP2Move)
             if (!valid.status) return
-            
-            if (valid.type === 'bombs')
-                nextP2Move = { ...nextP2Move, powerups: {...nextP2Move.powerups, bombs: nextP2Move.bombs + 1 }}
-            else if (valid.type === 'fire')
-                nextP2Move = { ...nextP2Move, powerups: {...nextP2Move.powerups, fire: nextP2Move.fire + 1 }}
 
         }
         if (keys['Control']) {
             console.log('player 2 planting bomb!')
         }
 
-        let updatedGrid = grid.map(e => e.slice())
-        if (online) {
-            // if player was on the bomb before then let's persist that bomb else it's an open space
-            // if next move was planting bomb, we gotta render that bomb
-            updatedGrid[prevP1Move.x][prevP1Move.y].type = (prevP1Move.onBomb) ? 'B' : 'O'
-            updatedGrid[nextP1Move.x][nextP1Move.y] = (nextP1Move.onBomb) ? {...nextP1Move, type: 'B'} : nextP1Move
+        if (valid.type === 'bombs')
+            nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, bombs: nextP1Move.bombs + 1 }}
+        else if (valid.type === 'fire')
+            nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, fire: nextP1Move.fire + 1 }}
 
+        let updatedGrid = grid.map(e => e.slice())
+
+        // if player was on the bomb before then let's persist that bomb else it's an open space
+        // if next move was planting bomb, we gotta render that bomb
+        updatedGrid[prevP1Move.x][prevP1Move.y].type = (prevP1Move.onBomb) ? 'B' : 'O'
+        updatedGrid[nextP1Move.x][nextP1Move.y] = (nextP1Move.onBomb) ? {...nextP1Move, type: 'B'} : nextP1Move
+
+        if (online) {
             setPlayer(nextP1Move)
         } else {
-            updatedGrid[prevP1Move.x][prevP1Move.y].type = (prevP1Move.onBomb) ? 'B' : 'O'
-            updatedGrid[nextP1Move.x][nextP1Move.y] = (nextP1Move.onBomb) ? {...nextP1Move, type: 'B'} : nextP1Move
-
             updatedGrid[prevP2Move.x][prevP2Move.y].type = (prevP2Move.onBomb) ? 'B' : 'O'
             updatedGrid[nextP2Move.x][nextP2Move.y] = (nextP2Move.onBomb) ? {...nextP2Move, type: 'B'} : nextP2Move
 
             setPlayers([nextP1Move, nextP2Move])
         }
+        
         setGrid(updatedGrid)
         if (online) {
             //send to backend for multiplayer
