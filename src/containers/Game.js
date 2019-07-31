@@ -27,8 +27,8 @@ export default function Game(props) {
             players = [ {}, {}, {}, {} ]
         } else {
             players = [
-                { type: 'P', x: 0, y: 0, bombs: 1, onBomb: false, powerups: { bombs: 1, fire: 1 } },
-                { type: 'P', x: 0, y: 0, bombs: 1, onBomb: false, powerups: { bombs: 1, fire: 1 } }
+                { type: 'P', id: 1, x: 0, y: 0, bombs: 1, onBomb: false, powerups: { bombs: 1, fire: 1 } },
+                { type: 'P', id: 2, x: 0, y: 0, bombs: 1, onBomb: false, powerups: { bombs: 1, fire: 1 } }
             ]
         }
         return setPlayersPosition(players, online)
@@ -265,13 +265,15 @@ export default function Game(props) {
     }, [player])
 
     const renderImage = (context, source, row, col, player=false) => {
+        //find player id from row, col
+        let targetPlayer = players.find(player => player.x === row && player.y === col)
         const image = new Image()
         image.onload = () => {
             context.drawImage(image, row * 50, col * 50)
             if (player) {
                 context.font = '20px Calibri'
                 context.fillStyle = 'black'
-                context.fillText('P1', row * 50 + 20, col * 50 + 20)
+                context.fillText(`P${targetPlayer.id}`, row * 50 + 20, col * 50 + 20)
             }
         }
         image.src = source
@@ -300,7 +302,6 @@ export default function Game(props) {
     const handleKeyUp = (e) => {
         e.preventDefault()
         keys[e.key] = false
-        console.log(keys)
         movePlayer()
     }
 
