@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 
 export default function StatusBar() {
+    const canvasRef = useRef(null)
+
+    useEffect(() => {
+
+    }, [])
+
     return (
-        <React.Fragment>
-        </React.Fragment>
+        <canvas ref={canvasRef} className='game' width={650} height={50} />
     )
 }

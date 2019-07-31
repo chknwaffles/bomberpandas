@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './stylesheets/App.css';
 import GameContainer from './containers/GameContainer'
 import FormContainer from './containers/FormContainer'
@@ -18,7 +18,7 @@ function App() {
             case 'signup': return <FormContainer login={false} changePage={changePage} handleForm={handleForm} />
             case 'profile': break;
             case 'about': break;
-            case 'logout': logOut()
+            case 'logout': logOut(); break;
             default: break;
         }
     }

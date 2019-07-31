@@ -74,6 +74,7 @@ export default function GameMenu(props) {
                     case 3: {
                         // show modal?
                         changePage('howtoplay')
+                        break;
                     }
                     case 4: changePage((user === '') ? 'login' : 'profile'); break;
                     case 2: changePage((user === '') ? 'signup' : 'logout'); break;

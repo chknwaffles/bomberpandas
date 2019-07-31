@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import GameMenu from '../components/GameMenu'
 import WaitingRoom from '../components/WaitingRoom'
-import StatusBar from '../components/StatusBar'
+
 import EndGame from '../components/EndGame'
 import Game from './Game'
-import Chat from './Chat'
 
 export default function GameContainer(props) {
     const { user, changePage, socket, setSocket } = props
@@ -13,6 +12,7 @@ export default function GameContainer(props) {
 
     const changeStatus = (newStatus) => setStatus(newStatus)
 
+    //for online functionality TODO
     const joinGame = () => {
         fetch('http://localhost:4000/joingame', {
             method: 'POST',
@@ -30,11 +30,6 @@ export default function GameContainer(props) {
         })
     }
 
-    const playGame = () => {
-        setStatus('local')
-        setSocket(new WebSocket('ws://localhost:4000/game'))
-    }
-
     useEffect(() => {
         if (game.status === 'closed') {
             socket.send(JSON.stringify(game))
@@ -48,43 +43,20 @@ export default function GameContainer(props) {
         }
     }, [game])
 
-    const statusCondition = () => {
+    const playGame = () => {
+        setStatus('local')
+        setSocket(new WebSocket('ws://localhost:4000/game'))
+    }
+
+    const renderByStatus = () => {
         switch(status) {
-            case 'online': {
-                return (
-                    <React.Fragment>
-                        <StatusBar />
-                        <Game socket={socket} user={user} changeStatus={changeStatus} online={true} />
-                        {/* <Chat socket={socket} user={user} /> */}
-                    </React.Fragment>
-                )
-            }
-            case 'waiting': {
-                return (
-                    <React.Fragment>
-                        <WaitingRoom user={user} changeStatus={changeStatus} game={game} />
-                        {/* <Chat socket={socket} user={user} /> */}
-                    </React.Fragment>
-                )
-            }
-            case 'defeat': {
-                return (
-                    <EndGame condition={'defeat'} changeStatus={changeStatus} />
-                )
-            }
-            case 'victory': {
-                return (
-                    <EndGame condition={'victory'} changeStatus={changeStatus} />
-                )
-            }
-            case 'local': {
-                return (
-                    <React.Fragment>
-                        <StatusBar />
-                        <Game socket={socket} user={user} changeStatus={changeStatus} online={false} />
-                        {/* <Chat socket={socket} user={user} /> */}
-                    </React.Fragment>
-                )
+            case 'online': return <Game socket={socket} user={user} changeStatus={changeStatus} online={true} />
+            case 'waiting': return <WaitingRoom user={user} changeStatus={changeStatus} game={game} />
+            case 'defeat': return <EndGame condition={'defeat'} changeStatus={changeStatus} />
+            case 'victory': return <EndGame condition={'victory'} changeStatus={changeStatus} />
+            case 'local': return <Game socket={socket} user={user} changeStatus={changeStatus} online={false} />
+            case 'endgame': {
+                // show end results
             }
             default: return <GameMenu user={user} changeStatus={changeStatus} changePage={changePage} joinGame={joinGame} playGame={playGame} />
         }
@@ -92,7 +64,7 @@ export default function GameContainer(props) {
 
     return (
         <React.Fragment> 
-            {statusCondition()} 
+            {renderByStatus()} 
         </React.Fragment>
     )
 }
