@@ -21,16 +21,13 @@ export default function Game(props) {
         return { type: 'P', x: 0, y: 0, bombs: 1, onBomb: false, username: user }
     })
     const [players, setPlayers] = useState(() => {
-        let players = []
-        if (online) {
-            // get props from game and add players
-            players = [ {}, {}, {}, {} ]
-        } else {
-            players = [
+        let players = (online) ? 
+            [ {}, {}, {}, {} ] : 
+            [
                 { type: 'P', id: 1, x: 0, y: 0, bombs: 1, onBomb: false, powerups: { bombs: 1, fire: 1 } },
                 { type: 'P', id: 2, x: 0, y: 0, bombs: 1, onBomb: false, powerups: { bombs: 1, fire: 1 } }
             ]
-        }
+            
         return setPlayersPosition(players, online)
     })
     const [grid, setGrid] = useState(() => {
