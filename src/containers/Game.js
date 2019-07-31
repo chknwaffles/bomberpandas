@@ -108,8 +108,12 @@ export default function Game(props) {
                         break;
                     }
                     case 'D': {
+                        if (!online) {
+                            let targetPlayer = players.find(player => player.x === colE.x && player.y === colE.y)
+                            changeStatus('endgame', targetPlayer)
+                        }
                         renderImage(context, skull, colE.x, colE.y);
-                        changeStatus((online) ? 'defeat' : 'endgame')
+                        changeStatus('defeat')
                         break;
                     }
                     case 'P': renderImage(context, icon, colE.x, colE.y, true); break;
@@ -216,7 +220,7 @@ export default function Game(props) {
 
             setPlayers([nextP1Move, nextP2Move])
         }
-        
+
         setGrid(updatedGrid)
         if (online) {
             //send to backend for multiplayer

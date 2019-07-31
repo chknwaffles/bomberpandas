@@ -39,6 +39,7 @@ export default function GameContainer(props) {
             socket.onmessage = (e) => {
                 const data = JSON.parse(e.data)
                 console.log(data)
+                setStatus('ready')
             }
         }
     }, [game])
@@ -48,15 +49,16 @@ export default function GameContainer(props) {
         setSocket(new WebSocket('ws://localhost:4000/game'))
     }
 
-    const renderByStatus = () => {
+    const renderByStatus = (player={}) => {
         switch(status) {
             case 'online': return <Game socket={socket} user={user} changeStatus={changeStatus} online={true} />
             case 'waiting': return <WaitingRoom user={user} changeStatus={changeStatus} game={game} />
-            case 'defeat': return <EndGame condition={'defeat'} changeStatus={changeStatus} />
-            case 'victory': return <EndGame condition={'victory'} changeStatus={changeStatus} />
+            case 'defeat': return <EndGame condition={'You lost the game!'} changeStatus={changeStatus} />
+            case 'victory': return <EndGame condition={'You won the game!'} changeStatus={changeStatus} />
             case 'local': return <Game socket={socket} user={user} changeStatus={changeStatus} online={false} />
             case 'endgame': {
                 // show end results
+                return <EndGame condition={'local'} changeStatus={changeStatus} player={player} />
             }
             default: return <GameMenu user={user} changeStatus={changeStatus} changePage={changePage} joinGame={joinGame} playGame={playGame} />
         }
