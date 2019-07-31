@@ -27,7 +27,7 @@ export default function Game(props) {
                 { type: 'P', id: 1, x: 0, y: 0, bombs: 1, onBomb: false, powerups: { bombs: 1, fire: 1 } },
                 { type: 'P', id: 2, x: 0, y: 0, bombs: 1, onBomb: false, powerups: { bombs: 1, fire: 1 } }
             ]
-            
+
         return setPlayersPosition(players, online)
     })
     const [grid, setGrid] = useState(() => {
@@ -86,11 +86,11 @@ export default function Game(props) {
     //componentdidupdate on grid state
     useEffect(() => {
         canvasRef.current.focus()
-        const canvas = canvasRef.current;
-        const context = canvas.getContext('2d');
+        const canvas = canvasRef.current
+        const context = canvas.getContext('2d')
 
-        let updatedGrid = grid.map(e => e.slice());
-        printGrid(updatedGrid);
+        let updatedGrid = grid.map(e => e.slice())
+        printGrid(updatedGrid)
         //render canvas board
         updatedGrid.forEach(row => {
             row.forEach(colE => {
@@ -100,18 +100,18 @@ export default function Game(props) {
                     case 'F': renderImage(context, fire, colE.x, colE.y); break;
                     case 'B': renderImage(context, bomb, colE.x, colE.y); break;
                     case 'O': {
-                        context.fillStyle = 'lightskyblue';
-                        context.fillRect(colE.x * SPRITE_SIZE, colE.y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
-                        break;
+                        context.fillStyle = 'lightskyblue'
+                        context.fillRect(colE.x * SPRITE_SIZE, colE.y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE)
+                        break
                     }
                     case 'D': {
                         if (!online) {
                             let targetPlayer = players.find(player => player.x === colE.x && player.y === colE.y)
                             changeStatus('endgame', targetPlayer)
                         }
-                        renderImage(context, skull, colE.x, colE.y);
+                        renderImage(context, skull, colE.x, colE.y)
                         changeStatus('defeat')
-                        break;
+                        break
                     }
                     case 'P': renderImage(context, icon, colE.x, colE.y, true); break;
                     case 'BP': renderImage(context, bombPower, colE.x, colE.y); break;
