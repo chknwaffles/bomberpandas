@@ -14,13 +14,14 @@ export const printGrid = (gridMap) => {
 
 export const setPlayersPosition = (players, online) => {
     if (online) {
-        // 
+        //
+        return
     } else {
         return players.map((player, i) => {
-            switch(i) {
-                case 0: return { ...player, x: 0, y: 0 }
-                case 1: return { ...player, x: gridSize - 1, y: gridSize - 1 }
-            }
+            if (i === 0)
+                return { ...player, x: 0, y: 0 }
+            if (i === 1)
+                return { ...player, x: gridSize - 1, y: gridSize - 1 }
         })
     }
 }

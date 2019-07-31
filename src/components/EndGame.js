@@ -12,10 +12,11 @@ export default function EndGame(props) {
         const menuPath = new Path2D()
         const buttonSize = [580, 150]
 
-        context.font = '60px Helvetica'
+        context.font = '30px Helvetica'
         if (condition === 'local') {
             let loser = player.id
-            context.fillText((loser === 1) ? 'P2 has won the game!' : 'P1 has won the game!', 150, 200)
+            console.log('loserid ', loser)
+            context.fillText((loser === 1) ? 'P2 has won the game!' : 'P1 has won the game!', 150, 100)
         } else {
             context.fillText(condition, 150, 200)
         }

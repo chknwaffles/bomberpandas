@@ -58,6 +58,7 @@ export default function GameContainer(props) {
             case 'local': return <Game socket={socket} user={user} changeStatus={changeStatus} online={false} />
             case 'endgame': {
                 // show end results
+                console.log('player being pased to endgmae', player)
                 return <EndGame condition={'local'} changeStatus={changeStatus} player={player} />
             }
             default: return <GameMenu user={user} changeStatus={changeStatus} changePage={changePage} joinGame={joinGame} playGame={playGame} />

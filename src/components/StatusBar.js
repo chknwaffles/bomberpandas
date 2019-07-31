@@ -7,20 +7,20 @@ export default function StatusBar(props) {
     const canvasRef = useRef(null)
 
     useEffect(() => {
-        const canvas = canvasRef.current
-        const context = canvas.getContext('2d')
+        // const canvas = canvasRef.current
+        // const context = canvas.getContext('2d')
 
-        context.font = '50px Helvetica'
+        // context.font = '50px Helvetica'
         
-        const renderImages = () => {
-            const image = new Image()
-            image.src = source
-            image.onload = () => {
-                context.drawImage(image, 0 * 50, 0 * 50)
-            }
-        }
+        // const renderImages = () => {
+        //     const image = new Image()
+        //     image.src = source
+        //     image.onload = () => {
+        //         context.drawImage(image, 0 * 50, 0 * 50)
+        //     }
+        // }
 
-        renderImages(row, col, source)
+        // renderImages(row, col, source)
     }, [players])
 
     return (
