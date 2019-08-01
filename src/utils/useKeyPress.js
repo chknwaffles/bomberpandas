@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react'
 
 export default function useKeyPress() {
-    const [keysPressed, setKeyPressed] = useState(new Set([]))
-
-  function downHandler({ key }) {
-    setKeyPressed(keysPressed.add(key))
-  }
-
-  const upHandler = ({ key }) => {
-    keysPressed.delete(key)
-    setKeyPressed(keysPressed)
-  }
+  const [keysPressed, setKeyPressed] = useState(new Set([]))
 
   useEffect(() => {
+    function downHandler({ key }) {
+      setKeyPressed(keysPressed.add(key))
+    }
+  
+    const upHandler = ({ key }) => {
+      keysPressed.delete(key)
+      setKeyPressed(keysPressed)
+    }
+
     window.addEventListener("keydown", downHandler)
     window.addEventListener("keyup", upHandler)
     return () => {
@@ -20,4 +20,6 @@ export default function useKeyPress() {
       window.removeEventListener("keyup", upHandler)
     }
   }, [])
+
+  return keysPressed
 }
