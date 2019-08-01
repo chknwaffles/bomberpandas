@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { gridSize, fillGrid, setPlayersPosition, generatePowerUp } from '../utils/Grid'
-import useKeyPress from '../utils/useKeyPress'
 import StatusBar from '../components/StatusBar'
 import '../stylesheets/GameContainer.css'
 import icon from '../images/kys.png'
@@ -45,6 +44,7 @@ export default function Game(props) {
             let id = data.shift()
             if (type === 'BOMB TARGETS') {
                 // explode in a radius around the target grid element
+                // need to stop fire from happening pass the walls
                 setGrid(grid => grid.map(row => row.map(colE => {
                     let res = data.find(e => e.x === colE.x && e.y === colE.y)
                     if (res !== undefined && (colE.type === 'O' || colE.type === 'BW' || colE.type === 'F' || colE.type === 'B')) {

@@ -41,9 +41,9 @@ export const fillGrid = (grid, players) => {
 
 export const generatePowerUp = (row, col) => {
     let randNum = Math.random() * 100
-    if (randNum < 90) 
+    if (randNum < 85) 
         return { type: 'O', x: row, y: col }
-    else if (randNum < 95)
+    else if (randNum < 90)
         return { type: 'FP', x: row, y: col }
     else
         return { type: 'BP', x: row, y: col }
