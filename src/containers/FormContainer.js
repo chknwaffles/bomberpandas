@@ -14,23 +14,10 @@ export default function FormContainer(props) {
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        handleForm(fields)
+        handleForm(fields, login)
         setFields({ username: '', password: '' })
     }
 
-    const checkSignUp = () => {
-        if (!login) {
-            return (
-                <Form.Item>
-                    <Input
-                        prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />}
-                        type='password'
-                        placeholder='Password'
-                    />
-                </Form.Item>
-            )
-        }
-    }
     return (
         <div className='form-container'>
             <Form onSubmit={handleSubmit} className='login-form'>
@@ -53,7 +40,6 @@ export default function FormContainer(props) {
                         onChange={(e) => handleChange(e)}
                     />
                 </Form.Item>
-                {checkSignUp()}
                 <Button block type='primary' htmlType="submit" className="login-form-button">{login ? 'Login' : 'Sign Up'}</Button>
                 <Button block onClick={() => changePage('')}>Back to Menu</Button>
             </Form>

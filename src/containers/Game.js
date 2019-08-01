@@ -1,45 +1,51 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { gridSize, randomizeWalls, printGrid } from '../utils/Grid'
-import '../stylesheets/GameContainer.css';
-import icon from '../images/kys.png';
-import bomb from '../images/bomb.png';
-import skull from '../images/skull.png';
+import React, { useState, useEffect, useRef } from 'react'
+import { gridSize, printGrid, fillGrid, setPlayersPosition } from '../utils/Grid'
+import StatusBar from '../components/StatusBar'
+import '../stylesheets/GameContainer.css'
+import icon from '../images/kys.png'
+import bomb from '../images/bomb.png'
+import skull from '../images/skull.png'
+import breakablewall from '../images/breakablewall.png'
+import wall from '../images/wall.png'
+import fire from '../images/fire.png'
+import bombPower from '../images/bombpowerup.png'
+import firePower from '../images/firepowerup.png'
 
-const SPRITE_SIZE = 50;
+const SPRITE_SIZE = 50
+let keys = []
 
 export default function Game(props) {
-    const { socket, user, changeStatus } = props
-    const canvasRef = useRef(null);
-    const [player, setPlayer] = useState({ type: 'P', x: 0, y: 0, placedBomb: false, onBomb: false, username: user });
-    const [grid, setGrid] = useState(() => {
-        let initialGrid = [...Array(gridSize[0])].map(e => Array(gridSize[1]).fill(''));
+    const { socket, user, changeStatus, online } = props
+    const canvasRef = useRef(null)
+    const [player, setPlayer] = useState(() => {
+        return { type: 'P', x: 0, y: 0, bombs: 1, onBomb: false, username: user }
+    })
+    const [players, setPlayers] = useState(() => {
+        let players = (online) ? 
+            [ {}, {}, {}, {} ] : 
+            [
+                { type: 'P', id: 1, x: 0, y: 0, bombs: 1, onBomb: false, powerups: { bombs: 1, fire: 1 } },
+                { type: 'P', id: 2, x: 0, y: 0, bombs: 1, onBomb: false, powerups: { bombs: 1, fire: 1 } }
+            ]
 
-        //fill the spaces with walls and randomize grid later
-        // if not first row and column and last row/column
-        // do some iteration to get all player positions and place them in the initial grid
-        initialGrid = initialGrid.map((rowArr, row) => {
-            return rowArr.map((colItem, col) => {
-                if ((row !== 0 && col !== 0) && row % 2 !== 0 && col % 2 !== 0) {
-                    return { type: 'W', x: row, y: col };
-                } else if (row === 0 && col === 0) {
-                    return { type: 'P', x: row, y: col, placedBomb: false, onBomb: false };
-                } else {
-                    return randomizeWalls(row, col);
-                } 
-            })
-        })
-        return initialGrid;
+        return setPlayersPosition(players, online)
+    })
+    const [grid, setGrid] = useState(() => {
+        let initialGrid = [...Array(gridSize)].map(e => Array(gridSize).fill(''))
+
+        initialGrid = fillGrid(initialGrid, players)
+        return initialGrid
     })
 
     //componentdidmount
     useEffect(() => {
         const ws = socket
-
         //listen to backend for player movement/bomb explosion
         ws.onmessage = (e) => {
             const data = JSON.parse(e.data);
-
-            if (data.shift() === 'BOMB TARGETS') {
+            let type = data.shift()
+            let id = data.shift()
+            if (type === 'BOMB TARGETS') {
                 // explode in a radius around the target grid element
                 setGrid(grid => grid.map(row => row.map(colE => {
                     let res = data.find(e => e.x === colE.x && e.y === colE.y)
@@ -50,155 +56,276 @@ export default function Game(props) {
                     }
                 })))
 
-                removeFireTimer(data);
+                removeFireTimer(data, id);
             }
         }
 
         //set timer for removing the fire after explosion
-        const removeFireTimer = (data) => setTimeout(() => {
+        const removeFireTimer = (data, id) => setTimeout(() => {
             setGrid(grid => grid.map(row => row.map(colE => {
                 let res = data.find(e => e.x === colE.x && e.y === colE.y)
                 if (res !== undefined) {
                     if (colE.type === 'P') {
-                        return {...colE, type: 'D'}
+                        // check death
+                        return { ...colE, type: 'D' }
                     } else if (colE.type !== 'W') {
-                        return {...colE, type: 'O'}
+                        return { ...colE, type: 'O' }
                     }
                 }
-                
                 return colE
             })))
-            setPlayer(p => {
-                p.placedBomb = false
-                return p
-            });
-            clearTimeout(removeFireTimer);
-        }, 500)
+            //set players bombs
+            setPlayers(players => players.map(player => {
+                if (player.id === +id) {
+                    player.bombs++
+                    console.log('player bombs', player.bombs)
+                }
+                console.log('playerid', player.id)
+                console.log('target id', id)
+                console.log('player in bomb', player)
+                return player
+            }))
+            clearTimeout(removeFireTimer)
+        }, 300)
+        //cleanup on componentdidunmount
     }, [])
 
-    //need to write custom hook for drawing the grid
     //componentdidupdate on grid state
     useEffect(() => {
         canvasRef.current.focus()
-        const canvas = canvasRef.current;
-        const context = canvas.getContext('2d');
+        const canvas = canvasRef.current
+        const context = canvas.getContext('2d')
 
-        let updatedGrid = grid.map(e => e.slice());
-        printGrid(updatedGrid);
+        let updatedGrid = grid.map(e => e.slice())
         //render canvas board
         updatedGrid.forEach(row => {
             row.forEach(colE => {
                 switch(colE.type) {
-                    case 'W': {
-                        context.fillStyle = 'black';
-                        context.fillRect(colE.x * SPRITE_SIZE, colE.y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
-                        break;
-                    }
-                    case 'BW': {
-                        context.fillStyle = 'brown';
-                        context.fillRect(colE.x * SPRITE_SIZE, colE.y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
-                        break;
-                    }
-                    case 'F': {
-                        context.fillStyle = 'red';
-                        context.fillRect(colE.x * SPRITE_SIZE, colE.y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
-                        break;
-                    }
-                    case 'B': {
-                        renderImage(context, bomb, colE.x, colE.y);
-                        break;
-                    }
+                    case 'W': renderImage(context, wall, colE.x, colE.y); break;
+                    case 'BW': renderImage(context, breakablewall, colE.x, colE.y); break;
+                    case 'F': renderImage(context, fire, colE.x, colE.y); break;
+                    case 'B': renderImage(context, bomb, colE.x, colE.y); break;
                     case 'O': {
-                        context.fillStyle = 'lightskyblue';
-                        context.fillRect(colE.x * SPRITE_SIZE, colE.y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
-                        break;
+                        context.fillStyle = 'lightskyblue'
+                        context.fillRect(colE.x * SPRITE_SIZE, colE.y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE)
+                        break
                     }
                     case 'D': {
-                        renderImage(context, skull, colE.x, colE.y); 
+                        if (!online) {
+                            let targetPlayer = players.find(player => player.x === colE.x && player.y === colE.y)
+                            console.log('dead player', targetPlayer)
+                            changeStatus('endgame', targetPlayer)
+                            break
+                        }
+                        renderImage(context, skull, colE.x, colE.y)
                         changeStatus('defeat')
-                        break;
+                        break
                     }
-                    case 'P': renderImage(context, icon, colE.x, colE.y); break;
+                    case 'P': renderImage(context, icon, colE.x, colE.y, true); break;
+                    case 'BP': renderImage(context, bombPower, colE.x, colE.y); break;
+                    case 'FP': renderImage(context, firePower, colE.x, colE.y); break;
                     default: break;
                 }
             })
         })
     }, [grid])
 
-    const movePlayer = (e) => {
+    const movePlayer = (key) => {
         //set state of player based on key
         //check valid move
-        let prevMove = {...player};
-        let nextMove = {...player, onBomb: false};
+        console.log('in moveplayer!')
+        let player1 = players[0]
+        let player2 = players[1]
+        let prevP1Move, prevP2Move, nextP1Move, nextP2Move, valid = {}
 
-        console.log('before move', prevMove)
-        switch(e.key) {
-            case 'ArrowUp': e.preventDefault()
-            case 'w': { // up
-                nextMove = {...nextMove, x: player.x, y: player.y - 1}
-                if (!validMove(nextMove)) return
+        prevP1Move = { ...player1 }
+        nextP1Move = { ...player1, onBomb: false }
 
-                break;
-            }
-            case 'ArrowDown': e.preventDefault()
-            case 's': { // down
-                nextMove = {...nextMove, y: player.y + 1}
-                if (!validMove(nextMove)) return
-
-                break;
-            }
-            case 'ArrowLeft': e.preventDefault()
-            case 'a': { // left
-                nextMove = {...nextMove, x: player.x - 1}
-                if (!validMove(nextMove)) return
-
-                break;
-            }
-            case 'ArrowRight': e.preventDefault()
-            case 'd': { // right
-                nextMove = {...nextMove, x: player.x + 1}
-                if (!validMove(nextMove)) return
-
-                break;
-            }
-            case ' ': { //spacebar
-                //plant bomb and change grid state to plant bomb
-                e.preventDefault()
-                if (!player.placedBomb) {
-                    nextMove = { ...nextMove, type: 'P', placedBomb: true, onBomb: true };
-                    //send to backend
-                    let bomb = { type: 'B', x: player.x, y: player.y }
-                    socket.send(JSON.stringify(bomb))
-                }
-                break;
-            }
-            default: return;
+        if (!online) {
+            prevP2Move = { ...player2 }
+            nextP2Move = { ...player2, onBomb: false }
         }
 
-        let updatedGrid = grid.map(e => e.slice());
-        console.log('prevMove', prevMove)
-        console.log('nextMove', nextMove)
+        let updatedGrid = grid.map(e => e.slice())
+
+        // check if next move includes a powerup then add it to player
+        if (keys['w']) {
+            nextP1Move = { ...nextP1Move, y: nextP1Move.y - 1 }
+            valid = validMove(nextP1Move)
+            if (!valid.status) return
+
+            if (valid.type === 'bombs') {
+                nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, bombs: nextP1Move.bombs + 1 }}
+                console.log('picking up bomb adder')
+            }
+            else if (valid.type === 'fire') {
+                nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, fire: nextP1Move.fire + 1 }}
+                console.log('picking up explosion power')
+                console.log(nextP1Move)
+            }
+        }
+        if (keys['s']) {
+            nextP1Move = { ...nextP1Move, y: nextP1Move.y + 1 }
+            valid = validMove(nextP1Move)
+            if (!valid.status) return
+
+            if (valid.type === 'bombs') {
+                nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, bombs: nextP1Move.bombs + 1 }}
+                console.log('picking up bomb adder')
+            }
+            else if (valid.type === 'fire') {
+                console.log('??', nextP1Move.fire)
+                nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, fire: nextP1Move.fire + 1 }}
+                console.log('picking up explosion power')
+                console.log(nextP1Move)
+            }
+        }
+        if (keys['a']) {
+            nextP1Move = { ...nextP1Move, x: nextP1Move.x - 1 }
+            valid = validMove(nextP1Move)
+            if (!valid.status) return
+            
+            if (valid.type === 'bombs') {
+                nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, bombs: nextP1Move.bombs + 1 }}
+                console.log('picking up bomb adder')
+            }
+            else if (valid.type === 'fire') {
+                nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, fire: nextP1Move.fire + 1 }}
+                console.log('picking up explosion power')
+                console.log(nextP1Move)
+            }
+        }
+        if (keys['d']) {
+            nextP1Move = { ...nextP1Move, x: nextP1Move.x + 1 }
+            valid = validMove(nextP1Move)
+            if (!valid.status) return
+            
+            if (valid.type === 'bombs') {
+                nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, bombs: +nextP1Move.bombs + 1 }}
+                console.log('picking up bomb adder')
+            }
+            else if (valid.type === 'fire') {
+                nextP1Move = { ...nextP1Move, powerups: {...nextP1Move.powerups, fire: nextP1Move.fire + 1 }}
+
+                console.log('picking up explosion power')
+                console.log(nextP1Move)
+            }
+        } 
+        if (keys[' ']) {
+            if (nextP1Move.bombs !== 0) {
+                nextP1Move = { ...nextP1Move, type: 'P', bombs: nextP1Move.bombs - 1, onBomb: true }
+                //send to backend
+                let bomb = { type: 'B', x: nextP1Move.x, y: nextP1Move.y, powerups: { ...nextP1Move.powerups }, id: 1 }
+                socket.send(JSON.stringify(bomb))
+            }
+        }
+
+        if (keys['ArrowUp']) {
+            console.log('arrowup!')
+            nextP2Move = { ...nextP2Move, y: nextP2Move.y - 1 }
+            valid = validMove(nextP2Move)
+            if (!valid.status) return
+
+            if (valid.type === 'bombs') {
+                nextP2Move = { ...nextP2Move, powerups: {...nextP2Move.powerups, bombs: nextP2Move.bombs + 1 }}
+                console.log('picking up bomb adder')
+            }
+            else if (valid.type === 'fire') {
+                nextP1Move = { ...nextP2Move, powerups: {...nextP2Move.powerups, fire: nextP2Move.fire + 1 }}
+                console.log('picking up explosion power')
+                console.log(nextP2Move)
+            }
+
+        }
+        if (keys['ArrowDown']) {
+            nextP2Move = { ...nextP2Move, y: nextP2Move.y + 1 }
+            valid = validMove(nextP2Move)
+            if (!valid.status) return
+
+            if (valid.type === 'bombs') {
+                nextP2Move = { ...nextP2Move, powerups: {...nextP2Move.powerups, bombs: nextP2Move.bombs + 1 }}
+                console.log('picking up bomb adder')
+            }
+            else if (valid.type === 'fire') {
+                nextP1Move = { ...nextP2Move, powerups: {...nextP2Move.powerups, fire: nextP2Move.fire + 1 }}
+                console.log('picking up explosion power')
+                console.log(nextP2Move)
+            }
+
+        }
+        if (keys['ArrowLeft']) {
+            nextP2Move = { ...nextP2Move, x: nextP2Move.x - 1 }
+            valid = validMove(nextP2Move)
+            if (!valid.status) return
+
+            if (valid.type === 'bombs') {
+                nextP2Move = { ...nextP2Move, powerups: {...nextP2Move.powerups, bombs: nextP2Move.bombs + 1 }}
+                console.log('picking up bomb adder')
+            }
+            else if (valid.type === 'fire') {
+                nextP1Move = { ...nextP2Move, powerups: {...nextP2Move.powerups, fire: nextP2Move.fire + 1 }}
+                console.log('picking up explosion power')
+                console.log(nextP2Move)
+            }
+
+        }
+        if (keys['ArrowRight']) {
+            nextP2Move = { ...nextP2Move, x: nextP2Move.x + 1 }
+            valid = validMove(nextP2Move)
+            if (!valid.status) return
+
+            if (valid.type === 'bombs') {
+                nextP2Move = { ...nextP2Move, powerups: {...nextP2Move.powerups, bombs: nextP2Move.bombs + 1 }}
+                console.log('picking up bomb adder')
+            }
+            else if (valid.type === 'fire') {
+                nextP1Move = { ...nextP2Move, powerups: {...nextP2Move.powerups, fire: nextP2Move.fire + 1 }}
+                console.log('picking up explosion power')
+                console.log(nextP2Move)
+            }
+        }
+        if (keys['Shift']) {
+            if (nextP2Move.bombs !== 0) {
+                nextP2Move = { ...nextP2Move, type: 'P', bombs: nextP2Move.bombs - 1, onBomb: true }
+                //send to backend
+                let bomb = { type: 'B', x: nextP2Move.x, y: nextP2Move.y, powerups: { ...nextP2Move.powerups }, id: 2 }
+                socket.send(JSON.stringify(bomb))
+            }
+            
+        }
+
         // if player was on the bomb before then let's persist that bomb else it's an open space
         // if next move was planting bomb, we gotta render that bomb
-        updatedGrid[prevMove.x][prevMove.y].type = (prevMove.onBomb) ? 'B' : 'O'
-        updatedGrid[nextMove.x][nextMove.y] = (nextMove.onBomb) ? {...nextMove, type: 'B'} : nextMove
-
-        setPlayer(nextMove);
-        setGrid(updatedGrid);
-        //send to backend for multiplayer
+        if (keys[key]) {
+            updatedGrid[prevP1Move.x][prevP1Move.y].type = (prevP1Move.onBomb) ? 'B' : 'O'
+            updatedGrid[nextP1Move.x][nextP1Move.y] = (nextP1Move.onBomb) ? { ...nextP1Move, type: 'B' } : nextP1Move
+            if (online) {
+                setPlayers([nextP1Move])
+                //send to backend for online
+                socket.send(JSON.stringify(updatedGrid))
+            } else {
+                updatedGrid[prevP2Move.x][prevP2Move.y].type = (prevP2Move.onBomb) ? 'B' : 'O'
+                updatedGrid[nextP2Move.x][nextP2Move.y] = (nextP2Move.onBomb) ? {...nextP2Move, type: 'B'} : nextP2Move
+    
+                setPlayers([nextP1Move, nextP2Move])
+            }
+            setGrid(updatedGrid)
+        }
     }
 
-    // just for debugging
-    useEffect(() => {
-        console.log('player status changed', player)
-    }, [player])
-
-    const renderImage = (context, source, row, col) => {
+    const renderImage = (context, source, row, col, player=false) => {
+        //find player id from row, col
+        let targetPlayer = players.find(player => player.x === row && player.y === col)
         const image = new Image()
-        image.src = source
         image.onload = () => {
             context.drawImage(image, row * 50, col * 50)
+            if (player) {
+                context.font = '20px Calibri'
+                context.fillStyle = 'black'
+                context.fillText(`P${targetPlayer.id}`, row * 50 + 20, col * 50 + 20)
+            }
         }
+        image.src = source
     }
 
     const validMove = (nextMove) => {
@@ -207,15 +334,33 @@ export default function Game(props) {
 
         // if x or y is negative, we can just return false
         // if wall then false, check for bombs too
-        if (row < 0 || col < 0 || row > grid.length - 1|| col > grid[0].length - 1) return false
-        if (grid[row][col].type === 'W' || grid[row][col].type === 'BW' || grid[row][col].type === 'B' || grid[row][col].type === 'P') return false
+        if (row < 0 || col < 0 || row > grid.length - 1|| col > grid[0].length - 1) return { status: false }
+        if (grid[row][col].type === 'W' || grid[row][col].type === 'BW' || grid[row][col].type === 'B' || grid[row][col].type === 'P') return { status: false }
+        if (grid[row][col].type === 'BP') return { status: true, type: 'bombs' }
+        if (grid[row][col].type === 'FP') return { status: true, type: 'fire' }
 
-        return true
+        return { status: true }
+    }
+
+    const handleKeyDown = (e) => {
+        e.preventDefault()
+        keys[e.key] = true
+        movePlayer(e.key)
+        console.log(e.key, keys[e.key])
+    }
+
+    const handleKeyUp = (e) => {
+        e.preventDefault()
+        keys[e.key] = false
     }
 
     return (
-        <div className='game-container'>
-            <canvas ref={canvasRef} className='game' width={650} height={650} tabIndex={0} onKeyDown={(e) => movePlayer(e)} />
-        </div>
+        <React.Fragment>
+            <div className='game-container'>
+                <canvas ref={canvasRef} className='game' width={650} height={650} tabIndex={0} onKeyDown={(e) => handleKeyDown(e)} onKeyUp={(e) => handleKeyUp(e)} />
+            </div>
+            <StatusBar players={players} />
+            {/* <Chat socket={socket} user={user} /> */}
+        </React.Fragment>
     )
 }
