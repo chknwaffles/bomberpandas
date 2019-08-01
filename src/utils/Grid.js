@@ -39,6 +39,16 @@ export const fillGrid = (grid, players) => {
     })
 }
 
+export const generatePowerUp = (row, col) => {
+    let randNum = Math.random() * 100
+    if (randNum < 90) 
+        return { type: 'O', x: row, y: col }
+    else if (randNum < 95)
+        return { type: 'FP', x: row, y: col }
+    else
+        return { type: 'BP', x: row, y: col }
+}
+
 const randomizeWalls = (row, col) => {
     if ((row === 0 && col === 0) || (row === 1 && col === 0) || (row === 0 && col === 1) ||
         (row === gridSize - 2 && col === gridSize - 1) || (row === gridSize - 1 && col === gridSize - 2)) 
