@@ -7,10 +7,14 @@ export default function StatusBar(props) {
     const canvasRef = useRef(null)
 
     useEffect(() => {
-        // const canvas = canvasRef.current
-        // const context = canvas.getContext('2d')
+        const canvas = canvasRef.current
+        const context = canvas.getContext('2d')
 
-        // context.font = '50px Helvetica'
+        context.font = '40px Helvetica'
+        context.fillStyle = 'black'
+        context.fillText('P1', 0, 40)
+        
+        context.fillText('P2', 300, 40)
         
         // const renderImages = () => {
         //     const image = new Image()
