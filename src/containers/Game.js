@@ -3,7 +3,7 @@ import { gridSize, fillGrid, setPlayersPosition, generatePowerUp } from '../util
 import StatusBar from '../components/StatusBar'
 import '../stylesheets/GameContainer.css'
 import panda from '../images/panda.png'
-import bomb from '../images/bomb.png'
+import bomb from '../images/bombicon.png'
 import skull from '../images/skull.png'
 import breakablewall from '../images/breakablewall.png'
 import wall from '../images/wall.png'
@@ -101,7 +101,6 @@ export default function Game(props) {
         canvasRef.current.focus()
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
-
         let updatedGrid = grid.map(e => e.slice())
         //render canvas board
         updatedGrid.forEach(row => {
@@ -111,9 +110,12 @@ export default function Game(props) {
                     case 'BW': renderImage(context, breakablewall, colE.x, colE.y); break;
                     case 'F': renderImage(context, fire, colE.x, colE.y); break;
                     case 'BF': renderImage(context, fire, colE.x, colE.y); break;
-                    case 'B': renderImage(context, bomb, colE.x, colE.y); break;
+                    case 'B': {
+                        // context.clearRect(colE.x, colE.y, 0, 0)
+                        renderImage(context, bomb, colE.x, colE.y); break;
+                    }
                     case 'O': {
-                        context.fillStyle = 'lightskyblue'
+                        context.fillStyle = 'gray'
                         context.fillRect(colE.x * SPRITE_SIZE, colE.y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE)
                         break
                     }
@@ -127,12 +129,24 @@ export default function Game(props) {
                         changeStatus('defeat')
                         break
                     }
-                    case 'P': renderImage(context, panda, colE.x, colE.y, true); break;
+                    case 'P': {
+                        // context.clearRect(colE.x, colE.y, 0, 0)
+                        renderImage(context, panda, colE.x, colE.y, true); break; }
                     case 'BP': {
-                        renderImage(context, bombPower, colE.x, colE.y); break;
+                        // context.clearRect(colE.x, colE.y, SPRITE_SIZE, SPRITE_SIZE)
+                        renderImage(context, bombPower, colE.x, colE.y)
+                        break
                     }
-                    case 'FP': renderImage(context, firePower, colE.x, colE.y); break;
-                    default: break;
+                    case 'FP': {
+                        context.clearRect(colE.x, colE.y, 0, 0)
+                        renderImage(context, firePower, colE.x, colE.y)
+                        break
+                    }
+                    default: {
+                        context.fillStyle = 'gray'
+                        context.fillRect(colE.x * SPRITE_SIZE, colE.y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE)
+                        break
+                    }
                 }
             })
         })

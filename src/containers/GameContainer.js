@@ -56,8 +56,8 @@ export default function GameContainer(props) {
             case 'defeat': return <EndGame condition={'You lost the game!'} changeStatus={changeStatus} />
             case 'victory': return <EndGame condition={'You won the game!'} changeStatus={changeStatus} />
             case 'local': return <Game socket={socket} user={user} changeStatus={changeStatus} online={false} />
-            case 'endgame1': return <EndGame condition={'P1 has won the game!'} changeStatus={changeStatus} />
-            case 'endgame2': return <EndGame condition={'P2 has won the game!'} changeStatus={changeStatus} />
+            case 'endgame1': return <EndGame condition={'P1  has  won  the  game!'} changeStatus={changeStatus} />
+            case 'endgame2': return <EndGame condition={'P2  has  won  the  game!'} changeStatus={changeStatus} />
             default: return <GameMenu user={user} changeStatus={changeStatus} changePage={changePage} joinGame={joinGame} playGame={playGame} />
         }
     }

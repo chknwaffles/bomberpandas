@@ -99,6 +99,11 @@ export default function GameMenu(props) {
         boxShadow: '0px 0px 0px 2px black inset'
     }
 
+    const modalBodyStyle = {
+        fontFamily: 'ArcadeClassic',
+        fontSize: '20px'
+    }
+
     return (
         <div className='menu-container'>
             <canvas id="canvas" className='game-menu' ref={canvasRef} width={650} height={650} onClick={(e) => handleClick(e)} />
@@ -110,13 +115,16 @@ export default function GameMenu(props) {
                 bodyStyle={modalStyle}
                 width={650}
                  >
-                <h2>How To Play</h2>
-                <p><strong>Player 1:</strong></p>
-                <p>WASD - Movement</p>
-                <p>Spacebar - Plant bomb</p>
-                <p><strong>Player 2: </strong></p>
-                <p>ArrowKeys - Movement</p>
-                <p>Shift - Plant bomb</p>
+                    <div className='modal-menu'> 
+                        <h1 style={{...modalBodyStyle, fontSize: '50px'}}>How To Play</h1>
+                        <p style={modalBodyStyle}><strong>Player 1:</strong></p>
+                        <p style={modalBodyStyle}>WASD - Movement</p>
+                        <p style={modalBodyStyle}>Spacebar - Plant bomb</p>
+                        <p style={modalBodyStyle}><strong>Player 2: </strong></p>
+                        <p style={modalBodyStyle}>ArrowKeys - Movement</p>
+                        <p style={modalBodyStyle}>Shift - Plant bomb</p>
+
+                    </div>
             </Modal>
         </div>
     )

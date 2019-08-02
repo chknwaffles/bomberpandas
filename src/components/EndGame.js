@@ -10,17 +10,17 @@ export default function EndGame(props) {
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
         const menuPath = new Path2D()
-        const buttonSize = [580, 150]
+        const buttonSize = [400, 60]
 
-        context.font = '30px ArcadeClassic'
-        context.fillText(condition, 150, 200)
+        context.font = '60px ArcadeClassic'
+        context.fillText(condition, 45, 200)
 
         context.lineWidth = 4
-        menuPath.rect(75, 480, buttonSize[0], buttonSize[1])
+        menuPath.rect(130, 440, buttonSize[0], buttonSize[1])
         context.strokeStyle = 'black'
-        context.strokeRect(75, 480, buttonSize[0], buttonSize[1])
+        context.strokeRect(130, 440, buttonSize[0], buttonSize[1])
         context.font = '50px ArcadeClassic'
-        context.fillText('back to menu', 120, 580)
+        context.fillText('back to menu', 185, 490)
 
         setPath(menuPath)
     }, [])
