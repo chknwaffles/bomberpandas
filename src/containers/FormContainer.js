@@ -39,8 +39,8 @@ export default function FormContainer(props) {
                         onChange={(e) => handleChange(e)}
                     />
                 </Form.Item>
-                <Button block type='primary' htmlType="submit" className="login-form-button">{login ? 'Login' : 'Sign Up'}</Button>
-                <Button block onClick={() => changePage('')}>Back to Menu</Button>
+                <Button block type='primary' htmlType="submit" className="login-form-button" >{login ? 'Login' : 'Sign Up'}</Button>
+                <Button block onClick={() => changePage('')} >Back to Menu</Button>
             </Form>
         </div>
     )

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { SkyLightStateless } from 'react-skylight'
+import { Modal } from 'antd'
 import '../stylesheets/GameContainer.css'
 
 export default function GameMenu(props) {
@@ -94,33 +94,30 @@ export default function GameMenu(props) {
 
     const modalStyle = {
         backgroundColor: 'gray',
-        color: 'black',
-        font: 'ArcadeClassic',
-        borderRadius: '4px',
-        boxShadow: '0px 0px 0px 2px black inset',
         border: 'white solid 2px',
-        position: 'fixed',
-        margin: '0 auto',
-        height: '650px',
-        width: '650px'
+        borderRadius: '4px',
+        boxShadow: '0px 0px 0px 2px black inset'
     }
 
     return (
         <div className='menu-container'>
             <canvas id="canvas" className='game-menu' ref={canvasRef} width={650} height={650} onClick={(e) => handleClick(e)} />
-            <SkyLightStateless dialogStyles={modalStyle} isVisible={visible} onCloseClicked={() => handleModal()} title="How to play" transitionDuration={500} >
-                <p> Player 1: </p>
-                <kbd>w</kbd>
-                <kbd>a</kbd>
-                <kbd>s</kbd>
-                <kbd>d</kbd>
-                <kbd>space</kbd>
-                <p> Player 2: </p>
-                <kbd>&uparrow</kbd>
-                <kbd>&downarrow</kbd>
-                <kbd>&rightarrow</kbd>
-                <kbd>&leftarrow</kbd>
-            </SkyLightStateless>
+            <Modal
+                visible={visible}
+                onOk={handleModal}
+                onCancel={handleModal} 
+                footer={null}
+                bodyStyle={modalStyle}
+                width={650}
+                 >
+                <h2>How To Play</h2>
+                <p><strong>Player 1:</strong></p>
+                <p>WASD - Movement</p>
+                <p>Spacebar - Plant bomb</p>
+                <p><strong>Player 2: </strong></p>
+                <p>ArrowKeys - Movement</p>
+                <p>Shift - Plant bomb</p>
+            </Modal>
         </div>
     )
 }
