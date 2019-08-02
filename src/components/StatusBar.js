@@ -11,7 +11,7 @@ export default function StatusBar(props) {
         const context = canvas.getContext('2d')
 
         context.font = '40px Helvetica'
-        context.fillStyle = 'black'
+        context.fillStyle = 'white'
         context.fillText('P1', 0, 40)
         
         context.fillText('P2', 300, 40)

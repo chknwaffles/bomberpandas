@@ -9,8 +9,10 @@ function App() {
     const [page, setPage] = useState('')
     const [socket, setSocket] = useState()
 
-    const changePage = (newPage) => setPage(newPage)
-    
+    const changePage = (newPage) => {
+        console.log(newPage)
+        setPage(newPage)
+    }
     const renderPage = () => {
         switch(page) {
             case '': return <GameContainer user={user} changePage={changePage} socket={socket} setSocket={setSocket} />

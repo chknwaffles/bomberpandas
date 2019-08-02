@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import '../stylesheets/GameContainer.css';
-import logo from '../images/logo.png'
+import logo from '../images/gamelogo.png'
 
 export default function Logo() {
     const canvasRef = useRef(null)

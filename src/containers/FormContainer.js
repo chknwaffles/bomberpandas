@@ -17,7 +17,6 @@ export default function FormContainer(props) {
         handleForm(fields, login)
         setFields({ username: '', password: '' })
     }
-
     return (
         <div className='form-container'>
             <Form onSubmit={handleSubmit} className='login-form'>

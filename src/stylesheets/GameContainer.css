@@ -8,7 +8,7 @@
 .game-container {
     /* position: absolute; */
     position: relative;
-    background: lightskyblue;
+    background: rgb(10, 10, 10);
     /* left: 500px;
     width: 650px;
     height: 650px; */
@@ -24,16 +24,17 @@
 } 
 
 .endgame-screen {
-    border: black solid 2px;
+    border: white solid 2px;
     border-radius: 4px;
     box-shadow: 0px 0px 0px 2px black inset;
     position: relative;
+    background: gray
 }
 .game-menu {
-    border: black solid 2px;
+    border: white solid 2px;
     border-radius: 4px;
     box-shadow: 0px 0px 0px 2px black inset;
-    background: lightskyblue;
+    background: gray
 }
 
 .game {
@@ -41,12 +42,12 @@
 }
 
 .game-logo {
-    background: lightskyblue;
+    background: rgb(10, 10, 10);
 }
 
 .waiting-room {
-    background: lightskyblue;
-    border: black solid 2px;
+    background: gray;
+    border: white solid 2px;
     border-radius: 4px;
     box-shadow: 0px 0px 0px 2px black inset;
 }

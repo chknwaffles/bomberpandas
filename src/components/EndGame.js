@@ -23,7 +23,7 @@ export default function EndGame(props) {
 
         context.lineWidth = 4
         menuPath.rect(75, 480, buttonSize[0], buttonSize[1])
-        context.strokeStyle = 'gray'
+        context.strokeStyle = 'black'
         context.strokeRect(75, 480, buttonSize[0], buttonSize[1])
         context.font = '50px Helvetica'
         context.fillText('back to menu', 120, 580)
