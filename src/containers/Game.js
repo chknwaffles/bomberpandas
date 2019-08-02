@@ -52,7 +52,7 @@ export default function Game(props) {
                         if (colE.type === 'O' ||  colE.type === 'F' || colE.type === 'B') {
                             return { ...colE, type: 'F' }
                         } else if (colE.type === 'BW') {
-                            return { ...colE, type: 'BF'}
+                            return { ...colE, type: 'BF' }
                         }
                         return colE
                     } else {
@@ -77,7 +77,7 @@ export default function Game(props) {
                             let obj = generatePowerUp(colE.x, colE.y)
                             return obj
                         }
-                        return { ...colE, type: 'O'}
+                        return { ...colE, type: 'O' }
                     }
                 }
                 return colE
@@ -120,8 +120,7 @@ export default function Game(props) {
                     case 'D': {
                         if (!online) {
                             let targetPlayer = players.find(player => player.x === colE.x && player.y === colE.y)
-                            console.log('dead player', targetPlayer)
-                            changeStatus('endgame')
+                            changeStatus((targetPlayer.id === 1) ? 'endgame2' : 'endgame1')
                             break
                         }
                         renderImage(context, skull, colE.x, colE.y)
@@ -161,9 +160,9 @@ export default function Game(props) {
             }
 
             if (valid.type === 'bombs') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, bombs: nextMove.powerups.bombs + 1 }}
+                nextMove = { ...nextMove, powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs + 1 }}
             } else if (valid.type === 'fire') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, fire: nextMove.powerups.fire + 1 }}
+                nextMove = { ...nextMove, powerups: { ...nextMove.powerups, fire: nextMove.powerups.fire + 1 }}
             }
         }
         if (keys['s']) {
@@ -234,6 +233,7 @@ export default function Game(props) {
 
     const movePlayer2 = () => {
         let player = players[1]
+        console.log(player)
         let prevMove, nextMove, valid = {}
         prevMove = { ...player }
         nextMove = { ...player, onBomb: false }
@@ -302,7 +302,7 @@ export default function Game(props) {
         }
         if (keys['Shift']) {
             if (nextMove.bombs !== 0) {
-                nextMove = { ...nextMove, type: 'P', bombs: nextMove.bombs - 1, onBomb: true }
+                nextMove = { ...nextMove, type: 'P', powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs - 1 }, onBomb: true }
                 //send to backend
                 let bomb = { type: 'B', x: nextMove.x, y: nextMove.y, powerups: { ...nextMove.powerups }, id: 2 }
                 socket.send(JSON.stringify(bomb))

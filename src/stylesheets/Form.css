@@ -1,11 +1,10 @@
 .form-container {
-    border: black solid 2px;
+    background-color: gray;
+    border: white solid 2px;
     border-radius: 4px;
     box-shadow: 0px 0px 0px 2px black inset;
     padding: 10px;
-    position: absolute;
-    top: 80px;
-    left: 500px;
+    margin: 0 auto;
     height: 650px;
     width: 650px;
 }

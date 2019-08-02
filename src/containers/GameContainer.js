@@ -49,18 +49,15 @@ export default function GameContainer(props) {
         setSocket(new WebSocket('ws://localhost:4000/game'))
     }
 
-    const renderByStatus = (player={}) => {
+    const renderByStatus = () => {
         switch(status) {
             case 'online': return <Game socket={socket} user={user} changeStatus={changeStatus} online={true} />
             case 'waiting': return <WaitingRoom user={user} changeStatus={changeStatus} game={game} />
             case 'defeat': return <EndGame condition={'You lost the game!'} changeStatus={changeStatus} />
             case 'victory': return <EndGame condition={'You won the game!'} changeStatus={changeStatus} />
             case 'local': return <Game socket={socket} user={user} changeStatus={changeStatus} online={false} />
-            case 'endgame': {
-                // show end results
-                console.log('player being pased to endgmae', player)
-                return <EndGame condition={'local'} changeStatus={changeStatus} player={player} />
-            }
+            case 'endgame1': return <EndGame condition={'P1 has won the game!'} changeStatus={changeStatus} />
+            case 'endgame2': return <EndGame condition={'P2 has won the game!'} changeStatus={changeStatus} />
             default: return <GameMenu user={user} changeStatus={changeStatus} changePage={changePage} joinGame={joinGame} playGame={playGame} />
         }
     }

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import '../stylesheets/GameContainer.css';
 
 export default function EndGame(props) {
-    const { condition, changeStatus, player } = props
+    const { condition, changeStatus } = props
     const canvasRef = useRef(null)
     const [path, setPath] = useState()
 
@@ -12,20 +12,14 @@ export default function EndGame(props) {
         const menuPath = new Path2D()
         const buttonSize = [580, 150]
 
-        context.font = '30px Helvetica'
-        if (condition === 'local') {
-            let loser = player.id
-            console.log('loserid ', loser)
-            context.fillText((loser === 1) ? 'P2 has won the game!' : 'P1 has won the game!', 150, 100)
-        } else {
-            context.fillText(condition, 150, 200)
-        }
+        context.font = '30px ArcadeClassic'
+        context.fillText(condition, 150, 200)
 
         context.lineWidth = 4
         menuPath.rect(75, 480, buttonSize[0], buttonSize[1])
         context.strokeStyle = 'black'
         context.strokeRect(75, 480, buttonSize[0], buttonSize[1])
-        context.font = '50px Helvetica'
+        context.font = '50px ArcadeClassic'
         context.fillText('back to menu', 120, 580)
 
         setPath(menuPath)

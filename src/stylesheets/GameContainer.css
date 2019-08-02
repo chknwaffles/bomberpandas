@@ -1,22 +1,14 @@
 .menu-container {
     position: relative;
-    /* left: 500px;
-    width: 650px;
-    height: 650px; */
 }
 
 .game-container {
-    /* position: absolute; */
     position: relative;
     background: rgb(10, 10, 10);
-    /* left: 500px;
-    width: 650px;
-    height: 650px; */
 }
 
 .logo-container {
     position: static;
-    /* left: 39%; */
 }
 
 .room-container {
