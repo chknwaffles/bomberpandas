@@ -45,6 +45,7 @@ export default function Game(props) {
             if (type === 'BOMB TARGETS') {
                 // explode in a radius around the target grid element
                 // need to stop fire from happening pass the walls
+                // check based on row and or col make a flag if we hit a wall then we know not to extend past the wall
                 //check from center point
                 setGrid(grid => grid.map(row => row.map(colE => {
                     let res = data.find(e => e.x === colE.x && e.y === colE.y)
@@ -243,6 +244,7 @@ export default function Game(props) {
             setPlayers([nextMove, players[1]])
         }
         setGrid(updatedGrid)
+        console.log('x:', nextMove.x, 'y:', nextMove.y)
     }
 
     const movePlayer2 = () => {
