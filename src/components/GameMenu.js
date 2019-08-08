@@ -56,7 +56,7 @@ export default function GameMenu(props) {
 
         // set paths array
         setPaths([localPath, onlinePath, instructionsPath, loginPath, signUpPath])
-    }, [])
+    }, [user])
 
     const handleClick = (e) => {
         const canvas = canvasRef.current
@@ -70,10 +70,9 @@ export default function GameMenu(props) {
                 switch(i) {
                     case 0: playGame(); break;
                     case 1: {
-                        if (user === '') return alert('You must be signed in to play!')
                         return alert('Feature coming soon!')
+                        // if (user === '') return alert('You must be signed in to play!')
                         //joinGame()
-                        break;
                     }
                     case 2: {
                         // show modal?

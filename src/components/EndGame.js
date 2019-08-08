@@ -23,6 +23,7 @@ export default function EndGame(props) {
         context.fillText('back to menu', 185, 490)
 
         setPath(menuPath)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const handleClick = (e) => {

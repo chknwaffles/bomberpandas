@@ -20,11 +20,12 @@ export const setPlayersPosition = (players, online) => {
         return players.map((player, i) => {
             if (i === 0)
                 return { ...player, x: 0, y: 0 }
-            if (i === 1)
-                return { ...player, x: gridSize - 1, y: gridSize - 1 }
+                
+            return { ...player, x: gridSize - 1, y: gridSize - 1 }
         })
     }
 }
+
 export const fillGrid = (grid, players) => {
     return grid.map((rowArr, row) => {
         return rowArr.map((colItem, col) => {

@@ -95,10 +95,25 @@ export default function Game(props) {
 
         //cleanup on componentdidunmount
 
-    }, [])
+    }, [socket])
 
     //componentdidupdate on grid state
     useEffect(() => {
+        const renderImage = (context, source, row, col, player=false) => {
+            //find player id from row, col
+            let targetPlayer = players.find(player => player.x === row && player.y === col)
+            const image = new Image()
+            image.onload = () => {
+                context.drawImage(image, row * 50, col * 50)
+                if (player) {
+                    context.font = '15px Calibri'
+                    context.fillStyle = 'blue'
+                    context.fillText(`P${targetPlayer.id}`, row * 50, col * 50 + 30)
+                }
+            }
+            image.src = source
+        }
+
         canvasRef.current.focus()
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
@@ -121,13 +136,15 @@ export default function Game(props) {
                         break
                     }
                     case 'D': {
+                        renderImage(context, skull, colE.x, colE.y)
                         if (!online) {
                             let targetPlayer = players.find(player => player.x === colE.x && player.y === colE.y)
-                            changeStatus((targetPlayer.id === 1) ? 'endgame2' : 'endgame1')
+                            setTimeout(() => changeStatus(prevStatus => (prevStatus = (targetPlayer.id === 1) ? 'endgame2' : 'endgame1')), 3000)
                             break
                         }
-                        renderImage(context, skull, colE.x, colE.y)
-                        changeStatus('defeat')
+                        //disable key functions for the player that died
+
+                        setTimeout(() => changeStatus(prevStatus => prevStatus = 'defeat'), 5000)
                         break
                     }
                     case 'P': {
@@ -151,6 +168,7 @@ export default function Game(props) {
                 }
             })
         })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [grid])
 
     const movePlayer = () => {
@@ -243,6 +261,7 @@ export default function Game(props) {
         } else {
             setPlayers([nextMove, players[1]])
         }
+
         setGrid(updatedGrid)
         console.log('x:', nextMove.x, 'y:', nextMove.y)
     }
@@ -329,21 +348,6 @@ export default function Game(props) {
         updatedGrid[nextMove.x][nextMove.y] = (nextMove.onBomb) ? {...nextMove, type: 'B'} : nextMove
         setPlayers([players[0], nextMove])
         setGrid(updatedGrid)
-    }
-
-    const renderImage = (context, source, row, col, player=false) => {
-        //find player id from row, col
-        let targetPlayer = players.find(player => player.x === row && player.y === col)
-        const image = new Image()
-        image.onload = () => {
-            context.drawImage(image, row * 50, col * 50)
-            if (player) {
-                context.font = '15px Calibri'
-                context.fillStyle = 'blue'
-                context.fillText(`P${targetPlayer.id}`, row * 50, col * 50 + 30)
-            }
-        }
-        image.src = source
     }
 
     const validMove = (nextMove) => {

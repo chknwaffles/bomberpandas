@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef } from 'react'
 import '../stylesheets/GameContainer.css'
 
 export default function WaitingRoom(props) {
-    const { user, changeStatus, game } = props
+    const { user, changeStatus, setSocket, game, socket } = props
     const canvasRef = useRef(null)
     const [path, setPath] = useState()
 
     useEffect(() => {
+        //draw the canvas
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
         const menuPath = new Path2D()
@@ -24,7 +25,21 @@ export default function WaitingRoom(props) {
         context.fillText('back to menu', 120, 580)
 
         setPath(menuPath)
-    }, [])
+
+        //listen for messages to start
+        if (game.status === 'closed') {
+            socket.send(JSON.stringify(game))
+            changeStatus('ready')
+            setSocket(new WebSocket('ws://localhost:4000/game'))
+        }
+
+        socket.onmessage = (e) => {
+            const data = JSON.parse(e.data)
+            console.log(data)
+            changeStatus('ready')
+        }
+
+    }, [game, socket])
 
     const handleClick = (e) => {
         const canvas = canvasRef.current

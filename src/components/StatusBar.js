@@ -2,7 +2,11 @@ import React, { useEffect, useRef } from 'react'
 import bomb from '../images/bombicon.png'
 import fire from '../images/firepowerupicon.png'
 
-export default function StatusBar(props) {
+function playerStatusProps(prevPlayer, nextPlayer) {
+    return prevPlayer.powerups === nextPlayer.powerups
+}
+
+const StatusBar = React.memo((props) => {
     const { players } = props
     const canvasRef = useRef(null)
 
@@ -30,4 +34,6 @@ export default function StatusBar(props) {
     return (
         <canvas ref={canvasRef} className='game' width={650} height={50} />
     )
-}
+}, playerStatusProps)
+
+export default StatusBar

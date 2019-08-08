@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import GameMenu from '../components/GameMenu'
 import WaitingRoom from '../components/WaitingRoom'
-
 import EndGame from '../components/EndGame'
 import Game from './Game'
 
@@ -11,7 +10,7 @@ export default function GameContainer(props) {
     const [game, setGame] = useState({ status: 'open' })
 
     const changeStatus = (newStatus) => setStatus(newStatus)
-
+    const changeSocket = (newSocket) => setSocket(newSocket)
     //for online functionality TODO
     const joinGame = () => {
         fetch('http://localhost:4000/joingame', {
@@ -31,28 +30,18 @@ export default function GameContainer(props) {
     }
 
     useEffect(() => {
-        if (game.status === 'closed') {
-            socket.send(JSON.stringify(game))
-            setStatus('ready')
-            setSocket(new WebSocket('ws://localhost:4000/game'))
-        } else if (game.status === 'waiting') {
-            socket.onmessage = (e) => {
-                const data = JSON.parse(e.data)
-                console.log(data)
-                setStatus('ready')
-            }
-        }
+        
     }, [game])
 
     const playGame = () => {
-        setStatus('local')
         setSocket(new WebSocket('ws://localhost:4000/game'))
+        setStatus('local')
     }
 
     const renderByStatus = () => {
         switch(status) {
             case 'online': return <Game socket={socket} user={user} changeStatus={changeStatus} online={true} />
-            case 'waiting': return <WaitingRoom user={user} changeStatus={changeStatus} game={game} />
+            case 'waiting': return <WaitingRoom user={user} changeStatus={changeStatus} setSocket={setSocket} game={game} socket={socket} />
             case 'defeat': return <EndGame condition={'You lost the game!'} changeStatus={changeStatus} />
             case 'victory': return <EndGame condition={'You won the game!'} changeStatus={changeStatus} />
             case 'local': return <Game socket={socket} user={user} changeStatus={changeStatus} online={false} />
