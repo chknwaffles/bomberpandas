@@ -1,6 +1,30 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Modal } from 'antd'
-import '../stylesheets/GameContainer.css'
+
+const styles = {
+    container: {
+        position: 'relative'
+    },
+    menu: {
+        border: 'maroon solid 2px',
+        borderRadius: '4px',
+        boxShadow: '0px 0px 0px 2px black inset',
+        background: 'gray'
+    },
+    modal: {
+        backgroundColor: 'gray',
+        border: 'maroon solid 2px',
+        borderRadius: '4px',
+        boxShadow: '0px 0px 0px 2px black inset'
+    },
+    modelContainer: {
+        fontFamily: 'ArcadeClassic'
+    },
+    modalBody: {
+        fontFamily: 'ArcadeClassic',
+        fontSize: '20px'
+    }
+}
 
 export default function GameMenu(props) {
     const { user, changeStatus, changePage, joinGame, playGame } = props
@@ -91,37 +115,25 @@ export default function GameMenu(props) {
         setVisible(false)
     }
 
-    const modalStyle = {
-        backgroundColor: 'gray',
-        border: 'white solid 2px',
-        borderRadius: '4px',
-        boxShadow: '0px 0px 0px 2px black inset'
-    }
-
-    const modalBodyStyle = {
-        fontFamily: 'ArcadeClassic',
-        fontSize: '20px'
-    }
-
     return (
-        <div className='menu-container'>
-            <canvas id="canvas" className='game-menu' ref={canvasRef} width={650} height={650} onClick={(e) => handleClick(e)} />
+        <div style={styles.container}>
+            <canvas id="canvas" style={styles.menu} ref={canvasRef} width={650} height={650} onClick={(e) => handleClick(e)} />
             <Modal
                 visible={visible}
                 onOk={handleModal}
                 onCancel={handleModal} 
                 footer={null}
-                bodyStyle={modalStyle}
+                bodyStyle={styles.modal}
                 width={650}
                  >
-                    <div className='modal-menu'> 
-                        <h1 style={{...modalBodyStyle, fontSize: '50px'}}>How To Play</h1>
-                        <p style={modalBodyStyle}><strong>Player 1:</strong></p>
-                        <p style={modalBodyStyle}>WASD - Movement</p>
-                        <p style={modalBodyStyle}>Spacebar - Plant bomb</p>
-                        <p style={modalBodyStyle}><strong>Player 2: </strong></p>
-                        <p style={modalBodyStyle}>ArrowKeys - Movement</p>
-                        <p style={modalBodyStyle}>Shift - Plant bomb</p>
+                    <div style={styles.modalContainer}> 
+                        <h1 style={{...styles.modalBody, fontSize: '50px'}}>How To Play</h1>
+                        <p style={styles.modalBody}><strong>Player 1:</strong></p>
+                        <p style={styles.modalBody}>WASD - Movement</p>
+                        <p style={styles.modalBody}>Spacebar - Plant bomb</p>
+                        <p style={styles.modalBody}><strong>Player 2: </strong></p>
+                        <p style={styles.modalBody}>ArrowKeys - Movement</p>
+                        <p style={styles.modalBody}>Shift - Plant bomb</p>
 
                     </div>
             </Modal>

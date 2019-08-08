@@ -1,6 +1,15 @@
 import React, { useEffect, useRef } from 'react';
-import '../stylesheets/GameContainer.css';
 import logo from '../images/gamelogo.png'
+
+const styles = {
+    container: {
+        position: 'relative',
+        background: 'rgb(10, 10, 10)'
+    },
+    logo: {
+        background: 'rgb(10, 10, 10)'
+    }
+}
 
 export default function Logo() {
     const canvasRef = useRef(null)
@@ -16,8 +25,8 @@ export default function Logo() {
     }, [])
 
     return (
-        <div className='logo-container'>
-            <canvas id="canvas" className='game-logo' ref={canvasRef} height={76} width={600} />
+        <div style={styles.container} >
+            <canvas id="canvas" style={styles.logo} ref={canvasRef} height={76} width={600} />
         </div>
     )
 }

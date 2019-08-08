@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
-import '../stylesheets/GameContainer.css';
+
+const endGameStyle = {
+    border: 'white solid 2px',
+    borderRadius: '4px',
+    boxShadow: '0px 0px 0px 2px black inset',
+    position: 'relative',
+    background: 'gray'
+}
 
 export default function EndGame(props) {
     const { condition, changeStatus } = props
@@ -39,6 +46,6 @@ export default function EndGame(props) {
     }
 
     return (
-        <canvas id="canvas" className='endgame-screen' ref={canvasRef} width={650} height={650} onClick={(e) => handleClick(e)} />
+        <canvas id="canvas" style={endGameStyle} ref={canvasRef} width={650} height={650} onClick={(e) => handleClick(e)} />
     )
 }

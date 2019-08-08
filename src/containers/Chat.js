@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { Card, Form, Icon, Input } from 'antd'
-import '../stylesheets/Chat.css'
 import 'antd/dist/antd.css'
+
+const chatStyle = {
+    border: 'black solid 2px',
+    borderRadius: '4px',
+    boxShadow: '0px 0px 0px 2px black inset',
+    padding: '10px',
+    position: 'absolute',
+    top: '737px',
+    left: '500px',
+    width: '650px'
+}
 
 export default function Chat(props) {
     const { socket, user } = props

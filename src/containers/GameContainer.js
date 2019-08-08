@@ -11,6 +11,7 @@ export default function GameContainer(props) {
 
     const changeStatus = (newStatus) => setStatus(newStatus)
     const changeSocket = (newSocket) => setSocket(newSocket)
+    
     //for online functionality TODO
     const joinGame = () => {
         fetch('http://localhost:4000/joingame', {

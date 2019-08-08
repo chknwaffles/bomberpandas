@@ -1,7 +1,17 @@
 import React, { useState } from 'react'
 import { Form, Icon, Input, Button } from 'antd'
-import '../stylesheets/Form.css'
 import 'antd/dist/antd.css'
+
+const containerStyle = {
+    backgroundColor: 'gray',
+    border: 'white solid 2px',
+    borderRadius: '4px',
+    boxShadow: '0px 0px 0px 2px black inset',
+    padding: '10px',
+    margin: '0 auto',
+    height: '650px',
+    width: '650px'
+}
 
 export default function FormContainer(props) {
     const { login, changePage, handleForm } = props
@@ -18,7 +28,7 @@ export default function FormContainer(props) {
         setFields({ username: '', password: '' })
     }
     return (
-        <div className='form-container'>
+        <div style={containerStyle}>
             <Form onSubmit={handleSubmit} className='login-form'>
                 <Form.Item>
                     <Input

@@ -1,5 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react'
-import '../stylesheets/GameContainer.css'
+
+const styles = {
+    container: {
+        position: 'relative'
+    },
+    menu: {
+        border: 'maroon solid 2px',
+        borderRadius: '4px',
+        boxShadow: '0px 0px 0px 2px black inset',
+        background: 'gray'
+    }
+}
 
 export default function WaitingRoom(props) {
     const { user, changeStatus, setSocket, game, socket } = props
@@ -54,8 +65,8 @@ export default function WaitingRoom(props) {
     }
 
     return (
-        <div className='room-container'>
-            <canvas ref={canvasRef} className='waiting-room' width={650} height={650} onClick={(e) => handleClick(e)} />
+        <div style={styles.container}>
+            <canvas ref={canvasRef} style={styles.menu} width={650} height={650} onClick={(e) => handleClick(e)} />
         </div>
     )
 }

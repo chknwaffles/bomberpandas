@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { gridSize, fillGrid, setPlayersPosition, generatePowerUp } from '../utils/Grid'
 import StatusBar from '../components/StatusBar'
-import '../stylesheets/GameContainer.css'
 import panda from '../images/panda.png'
 import bomb from '../images/bombicon.png'
 import skull from '../images/skull.png'
@@ -10,6 +9,19 @@ import wall from '../images/wall.png'
 import fire from '../images/fire.png'
 import bombPower from '../images/bombpowerup.png'
 import firePower from '../images/firepowerup.png'
+
+const styles = {
+    container: {
+        position: 'relative',
+        background: 'rgb(10, 10, 10)'
+    },
+    game: {
+        border: 'maroon solid 2px',
+        borderRadius: '4px',
+        boxShadow: '0px 0px 0px 2px black inset',
+        background: 'gray'
+    }
+}
 
 const SPRITE_SIZE = 50
 let keys = []
@@ -21,8 +33,8 @@ export default function Game(props) {
         let players = (online) ? 
             [ {}, {}, {}, {} ] : 
             [
-                { type: 'P', id: 1, x: 0, y: 0, bombs: 1, onBomb: false, powerups: { bombs: 1, fire: 1 } },
-                { type: 'P', id: 2, x: 0, y: 0, bombs: 1, onBomb: false, powerups: { bombs: 1, fire: 1 } }
+                { type: 'P', id: 1, x: 0, y: 0, onBomb: false, powerups: { bombs: 1, fire: 1 } },
+                { type: 'P', id: 2, x: 0, y: 0, onBomb: false, powerups: { bombs: 1, fire: 1 } }
             ]
 
         return setPlayersPosition(players, online)
@@ -70,7 +82,7 @@ export default function Game(props) {
             setGrid(grid => grid.map(row => row.map(colE => {
                 let res = data.find(e => e.x === colE.x && e.y === colE.y)
                 if (res !== undefined) {
-                    if (colE.type === 'P') {
+                    if (colE.type === 'P' || colE.onBomb) {
                         // check death
                         return { ...colE, type: 'D' }
                     } else if (colE.type !== 'W') {
@@ -86,7 +98,7 @@ export default function Game(props) {
             //set players bombs
             setPlayers(players => players.map(player => {
                 if (player.id === +id) {
-                    player.bombs++
+                    player.powerups.bombs++
                 }
                 return player
             }))
@@ -139,12 +151,12 @@ export default function Game(props) {
                         renderImage(context, skull, colE.x, colE.y)
                         if (!online) {
                             let targetPlayer = players.find(player => player.x === colE.x && player.y === colE.y)
-                            setTimeout(() => changeStatus(prevStatus => (prevStatus = (targetPlayer.id === 1) ? 'endgame2' : 'endgame1')), 3000)
+                            setTimeout(() => changeStatus(prevStatus => (prevStatus = (targetPlayer.id === 1) ? 'endgame2' : 'endgame1')), 2000)
                             break
                         }
                         //disable key functions for the player that died
 
-                        setTimeout(() => changeStatus(prevStatus => prevStatus = 'defeat'), 5000)
+                        setTimeout(() => changeStatus(prevStatus => prevStatus = 'defeat'), 2000)
                         break
                     }
                     case 'P': {
@@ -241,8 +253,8 @@ export default function Game(props) {
             }
         }
         if (keys[' ']) {
-            if (nextMove.bombs !== 0) {
-                nextMove = { ...nextMove, type: 'P', onBomb: true, powerups: { ...nextMove.powerups, bombs: nextMove.bombs - 1 } }
+            if (nextMove.powerups.bombs !== 0) {
+                nextMove = { ...nextMove, type: 'P', onBomb: true, powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs - 1 } }
                 //send to backend
                 let bomb = { type: 'B', x: nextMove.x, y: nextMove.y, powerups: { ...nextMove.powerups }, id: 1 }
                 socket.send(JSON.stringify(bomb))
@@ -264,6 +276,7 @@ export default function Game(props) {
 
         setGrid(updatedGrid)
         console.log('x:', nextMove.x, 'y:', nextMove.y)
+        console.log('bombs: ', nextMove.powerups.bombs)
     }
 
     const movePlayer2 = () => {
@@ -336,7 +349,7 @@ export default function Game(props) {
             }
         }
         if (keys['Shift']) {
-            if (nextMove.bombs !== 0) {
+            if (nextMove.powerups.bombs !== 0) {
                 nextMove = { ...nextMove, type: 'P', powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs - 1 }, onBomb: true }
                 //send to backend
                 let bomb = { type: 'B', x: nextMove.x, y: nextMove.y, powerups: { ...nextMove.powerups }, id: 2 }
@@ -386,8 +399,8 @@ export default function Game(props) {
 
     return (
         <React.Fragment>
-            <div className='game-container'>
-                <canvas ref={canvasRef} className='game' width={650} height={650} tabIndex={0} onKeyDown={(e) => handleDownKey(e)} onKeyUp={(e) => handleUpKey(e)} />
+            <div style={styles.container} >
+                <canvas ref={canvasRef} style={styles.game} width={650} height={650} tabIndex={0} onKeyDown={(e) => handleDownKey(e)} onKeyUp={(e) => handleUpKey(e)} />
             </div>
             <StatusBar players={players} />
             {/* <Chat socket={socket} user={user} /> */}
