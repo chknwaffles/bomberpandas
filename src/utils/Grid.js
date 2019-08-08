@@ -12,20 +12,6 @@ export const printGrid = (gridMap) => {
     console.log('')
 }
 
-export const setPlayersPosition = (players, online) => {
-    if (online) {
-        //
-        return
-    } else {
-        return players.map((player, i) => {
-            if (i === 0)
-                return { ...player, x: 0, y: 0 }
-                
-            return { ...player, x: gridSize - 1, y: gridSize - 1 }
-        })
-    }
-}
-
 export const fillGrid = (grid, players) => {
     return grid.map((rowArr, row) => {
         return rowArr.map((colItem, col) => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { gridSize, fillGrid, setPlayersPosition, generatePowerUp } from '../utils/Grid'
+import Player from '../classes/Player'
 import StatusBar from '../components/StatusBar'
 import panda from '../images/panda.png'
 import bomb from '../images/bombicon.png'
@@ -33,11 +34,11 @@ export default function Game(props) {
         let players = (online) ? 
             [ {}, {}, {}, {} ] : 
             [
-                { type: 'P', id: 1, x: 0, y: 0, onBomb: false, powerups: { bombs: 1, fire: 1 } },
-                { type: 'P', id: 2, x: 0, y: 0, onBomb: false, powerups: { bombs: 1, fire: 1 } }
+                new Player(1),
+                new Player(2)
             ]
 
-        return setPlayersPosition(players, online)
+        return Player.setPlayersPosition(players, online)
     })
     const [grid, setGrid] = useState(() => {
         let initialGrid = [...Array(gridSize)].map(e => Array(gridSize).fill(''))
