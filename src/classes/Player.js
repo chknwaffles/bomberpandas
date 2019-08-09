@@ -1,11 +1,13 @@
-class Player extends GameObject {
+import GameObject from '../classes/GameObject'
+
+export default class Player extends GameObject {
     constructor(id) {
         super('P', 0, 0)
         this.id = id
         this.onBomb = false
         this.powerups = {
             bombCount: 1,
-            explosionSize: 1
+            bombSize: 1
         }
         this.prevPosition = { 
             x: 0, 
@@ -14,13 +16,31 @@ class Player extends GameObject {
         }
     }
 
-    setPosition(x, y) {
+    setX(x) {
+        this.prevPosition.x = this.x
+        this.x = x
+    }
+
+    setY(y) {
+        this.prevPosition.y = this.y
+        this.y = y
+    }
+
+    getX() {
+        return this.x
+    }
+
+    getY() {
+        return this.y
+    }
+
+    setPos(x, y) {
         this.prevPosition = { x: this.x, y: this.y }
         this.x = x
         this.y = y
     }
 
-    getPosition() {
+    getPos() {
         return {
             x: this.x,
             y: this.y
@@ -35,13 +55,33 @@ class Player extends GameObject {
         return this.onBomb
     }
 
-    setPowerups(bombCount, explosionSize) {
+    getBombCount() {
+        return this.powerups.bombCount
+    }
+
+    setBombCount(num) {
+        this.powerups.bombCount = num
+    }
+
+    getBombSize() {
+        return this.powerups.bombSize
+    }
+
+    setBombSize(num) {
+        this.powerups.bombSize = num
+    }
+
+    setPowerups(bombCount, bombSize) {
         this.bombCount = bombCount
-        this.explosionSize = explosionSize
+        this.bombSize = bombSize
     }
 
     getPowerups() {
         return this.powerups
+    }
+
+    getPrevPos() {
+        return this.prevPosition
     }
 
     static setPlayersPosition = (players, online) => {
@@ -53,7 +93,7 @@ class Player extends GameObject {
                 if (i === 0)
                     return { ...player, x: 0, y: 0 }
                     
-                return { ...player, x: gridSize - 1, y: gridSize - 1 }
+                return { ...player, x: 12, y: 12 }
             })
         }
     }

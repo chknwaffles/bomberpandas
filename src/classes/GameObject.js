@@ -1,4 +1,4 @@
-class GameObject {
+export default class GameObject {
     constructor(type, x, y) {
         this.type = type
         this.x = x

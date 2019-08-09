@@ -37,7 +37,8 @@ export default function Game(props) {
                 new Player(1),
                 new Player(2)
             ]
-
+            console.log(players[0])
+            console.log('typeof', typeof(players[0]))
         return Player.setPlayersPosition(players, online)
     })
     const [grid, setGrid] = useState(() => {
@@ -188,76 +189,76 @@ export default function Game(props) {
         //set state of player based on key
         //check valid move
         let player = players[0]
-        
-        let prevMove, nextMove, valid = {}
-
-        prevMove = { ...player }
-        nextMove = { ...player, onBomb: false }
-
+        console.log(player)
+        console.log(typeof(player))
+        debugger
+        let valid = {}
+        let prevMove = player.getPrevPos()
         let updatedGrid = grid.map(e => e.slice())
 
         // check if next move includes a powerup then add it to player
         if (keys['w']) {
-            nextMove = { ...nextMove, y: nextMove.y - 1 }
-            valid = validMove(nextMove)
+            player.setY(player.getY() - 1)
+            valid = validMove(player.getPosition())
             if (!valid.status) {
                 keys['w'] = false
                 return
             }
 
             if (valid.type === 'bombs') {
-                nextMove = { ...nextMove, powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs + 1 }}
+                player.setBombCount(player.getBombCount() + 1)
             } else if (valid.type === 'fire') {
-                nextMove = { ...nextMove, powerups: { ...nextMove.powerups, fire: nextMove.powerups.fire + 1 }}
+                player.setExplosionSize(player.getExplosionSize() + 1)
             }
         }
         if (keys['s']) {
-            nextMove = { ...nextMove, y: nextMove.y + 1 }
-            valid = validMove(nextMove)
+            player.setY(player.getY() + 1)
+            valid = validMove(player.getPosition())
             if (!valid.status) {
                 keys['s'] = false
                 return
             }
 
             if (valid.type === 'bombs') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, bombs: nextMove.powerups.bombs + 1 }}
+                player.setBombCount(player.getBombCount() + 1)
             } else if (valid.type === 'fire') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, fire: nextMove.powerups.fire + 1 }}
+                player.setExplosionSize(player.getExplosionSize() + 1)
             }
         }
         if (keys['a']) {
-            nextMove = { ...nextMove, x: nextMove.x - 1 }
-            valid = validMove(nextMove)
+            player.setX(player.getX() - 1)
+            valid = validMove(player.getPosition())
             if (!valid.status) {
                 keys['a'] = false
                 return
             }
             
             if (valid.type === 'bombs') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, bombs: nextMove.powerups.bombs + 1 }}
+                player.setBombCount(player.getBombCount() + 1)
             } else if (valid.type === 'fire') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, fire: nextMove.powerups.fire + 1 }}
+                player.setExplosionSize(player.getExplosionSize() + 1)
             }
         }
         if (keys['d']) {
-            nextMove = { ...nextMove, x: nextMove.x + 1 }
-            valid = validMove(nextMove)
+            player.setX(player.getX() - 1)
+            valid = validMove(player.getPosition())
             if (!valid.status) {
                 keys['d'] = false
                 return
             } 
             
             if (valid.type === 'bombs') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, bombs: nextMove.powerups.bombs + 1 }}
+                player.setBombCount(player.getBombCount() + 1)
             } else if (valid.type === 'fire') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, fire: nextMove.powerups.fire + 1 }}
+                player.setExplosionSize(player.getExplosionSize() + 1)
             }
         }
         if (keys[' ']) {
-            if (nextMove.powerups.bombs !== 0) {
-                nextMove = { ...nextMove, type: 'P', onBomb: true, powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs - 1 } }
+            if (player.getBombCount() !== 0) {
+                player.setBombCount(player.getBombCount() - 1)
+                player.setOnBomb(true)
                 //send to backend
-                let bomb = { type: 'B', x: nextMove.x, y: nextMove.y, powerups: { ...nextMove.powerups }, id: 1 }
+                let bomb = { type: 'B', x: player.getX(), y: player.getY(), powerups: player.getPowerups(), id: 1 }
                 socket.send(JSON.stringify(bomb))
             }
         }
@@ -265,19 +266,18 @@ export default function Game(props) {
         // if player was on the bomb before then let's persist that bomb else it's an open space
         // if next move was planting bomb, we gotta render that bomb
         updatedGrid[prevMove.x][prevMove.y].type = (prevMove.onBomb) ? 'B' : 'O'
-        updatedGrid[nextMove.x][nextMove.y] = (nextMove.onBomb) ? { ...nextMove, type: 'B' } : nextMove
+        updatedGrid[player.getX()][player.getY()] = (player.isOnBomb()) ? { ...player, type: 'B' } : player
 
         if (online) {
-            setPlayers([nextMove])
+            setPlayers([player])
             //send to backend for online
             socket.send(JSON.stringify(updatedGrid))
         } else {
-            setPlayers([nextMove, players[1]])
+            setPlayers([player, players[1]])
         }
 
         setGrid(updatedGrid)
-        console.log('x:', nextMove.x, 'y:', nextMove.y)
-        console.log('bombs: ', nextMove.powerups.bombs)
+        console.log('x:', player.x, 'y:', player.getY())
     }
 
     const movePlayer2 = () => {
@@ -365,8 +365,8 @@ export default function Game(props) {
     }
 
     const validMove = (nextMove) => {
-        const row = nextMove.x
-        const col = nextMove.y
+        const row = nextMove.first
+        const col = nextMove.last
 
         // if x or y is negative, we can just return false
         // if wall then false, check for bombs too
