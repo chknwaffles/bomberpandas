@@ -19,14 +19,8 @@
 Write about 1-2 paragraphs describing the purpose of your project.
 
 ## Getting Started <a name = "getting_started"></a>
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
-
 ### Prerequisites
-Backend Repo available here: 
-
-```
-https://github.com/chknwaffles/bomberpandas-backend
-```
+Backend Repo available here: https://github.com/chknwaffles/bomberpandas-backend
 
 ### Installing
 OSX & Linux (Both frontend and backend)
