@@ -6,11 +6,8 @@
     A Bomberman clone, 2D maze-like player vs player game.
     <br>
 </p>
-    
-## About <a name = "about"></a>
-Write about 1-2 paragraphs describing the purpose of your project.
 
-## Getting Started <a name = "getting_started"></a>
+## Getting Started
 ### Prerequisites
 Backend Repo available here: https://github.com/chknwaffles/bomberpandas-backend
 
@@ -20,7 +17,7 @@ OSX & Linux (Both frontend and backend)
 npm install
 ```
 
-## Usage <a name="usage"></a>
+## Usage
 Instructions:
 
 Player 1
@@ -37,16 +34,16 @@ Full app demo available here:
 ```
 ```
 
-## Built Using <a name = "built_using"></a>
+## Built Using
 - [MongoDB](https://www.mongodb.com/) - Database
 - [Express](https://expressjs.com/) - Server Framework
 - [ReactJs](https://reactjs.org/) - Web Framework
 - [NodeJs](https://nodejs.org/en/) - Server Environment
 
-## TODO <a name = "todo"></a>
+## TODO
 - Realtime 4-player multiplayer
 
-## Acknowledgements <a name = "acknowledgement"></a>
+## Acknowledgements
 - Hat tip to anyone whose code was used
 - Inspiration
 - References
