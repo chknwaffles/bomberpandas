@@ -30,16 +30,13 @@ npm install
 
 ## Usage <a name="usage"></a>
 Instructions:
-
-<br>
 Player 1
 WASD - Movement
 Space - Bomb
-<br>
+
 Player 2
 Arrow Keys - Movement
 Shift - Bomb
-<br>
 
 Click play to start game!
 
