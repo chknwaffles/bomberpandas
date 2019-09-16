@@ -11,7 +11,7 @@
 
 ---
 
-<p align="center"> Few lines describing your project.
+<p align="center"> A Bomberman clone, 2D maze-like player vs player game.
     <br> 
 </p>
 
