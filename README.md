@@ -10,7 +10,7 @@
 - [Deployment](#deployment)
 - [Usage](#usage)
 - [Built Using](#built_using)
-- [TODO](..#todo)
+- [TODO](#todo)
 - [Acknowledgments](#acknowledgement)
 
 ## About <a name = "about"></a>
