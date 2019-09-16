@@ -6,14 +6,6 @@
     A Bomberman clone, 2D maze-like player vs player game.
     <br>
 </p>
-
-## Table of Contents
-- [About](#about)
-- [Getting Started](#getting_started)
-- [Usage](#usage)
-- [Built Using](#built_using)
-- [TODO](#todo)
-- [Acknowledgments](#acknowledgement)
     
 ## About <a name = "about"></a>
 Write about 1-2 paragraphs describing the purpose of your project.
@@ -30,6 +22,7 @@ npm install
 
 ## Usage <a name="usage"></a>
 Instructions:
+
 Player 1
 WASD - Movement
 Space - Bomb
