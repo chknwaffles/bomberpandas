@@ -21,9 +21,7 @@
 - [Deployment](#deployment)
 - [Usage](#usage)
 - [Built Using](#built_using)
-- [TODO](../TODO.md)
-- [Contributing](../CONTRIBUTING.md)
-- [Authors](#authors)
+- [TODO](..#todo)
 - [Acknowledgments](#acknowledgement)
 
 ## About <a name = "about"></a>
@@ -56,28 +54,8 @@ until finished
 
 End with an example of getting some data out of the system or using it for a little demo.
 
-## 🔧 Running the tests <a name = "tests"></a>
-Explain how to run the automated tests for this system.
-
-### Break down into end to end tests
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-Explain what these tests test and why
-
-```
-Give an example
-```
-
 ## Usage <a name="usage"></a>
 Add notes about how to use the system.
-
-## Deployment <a name = "deployment"></a>
-Add additional notes about how to deploy this on a live system.
 
 ## Built Using <a name = "built_using"></a>
 - [MongoDB](https://www.mongodb.com/) - Database
@@ -85,8 +63,8 @@ Add additional notes about how to deploy this on a live system.
 - [ReactJs](https://reactjs.org/) - Web Framework
 - [NodeJs](https://nodejs.org/en/) - Server Environment
 
-## Authors <a name = "authors"></a>
-- [@chknwaffles](https://github.com/chknwaffles)
+## TODO <a name = "todo"></a>
+- Realtime 4-player multiplayer
 
 ## Acknowledgements <a name = "acknowledgement"></a>
 - Hat tip to anyone whose code was used
