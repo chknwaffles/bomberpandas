@@ -42,8 +42,3 @@ Full app demo available here:
 
 ## TODO
 - Realtime 4-player multiplayer
-
-## Acknowledgements
-- Hat tip to anyone whose code was used
-- Inspiration
-- References
