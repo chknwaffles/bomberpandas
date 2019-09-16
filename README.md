@@ -1,7 +1,10 @@
 <h3 align="center">Bomber Pandas</h3>
 
-<p align="center"> A Bomberman clone, 2D maze-like player vs player game.
-    <br> 
+<p align="center">
+    <a href="url">Demo</a>
+    <br>
+    A Bomberman clone, 2D maze-like player vs player game.
+    <br>
 </p>
 
 ## Table of Contents
@@ -11,7 +14,7 @@
 - [Built Using](#built_using)
 - [TODO](#todo)
 - [Acknowledgments](#acknowledgement)
-
+    
 ## About <a name = "about"></a>
 Write about 1-2 paragraphs describing the purpose of your project.
 
