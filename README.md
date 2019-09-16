@@ -22,31 +22,36 @@ Write about 1-2 paragraphs describing the purpose of your project.
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
 
 ### Prerequisites
-What things you need to install the software and how to install them.
+Backend Repo available here: 
 
 ```
-Give examples
+https://github.com/chknwaffles/bomberpandas-backend
 ```
 
 ### Installing
-A step by step series of examples that tell you how to get a development env running.
-
-Say what the step will be
-
+OSX & Linux (Both frontend and backend)
 ```
-Give the example
+npm install
 ```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo.
 
 ## Usage <a name="usage"></a>
-Add notes about how to use the system.
+Instructions:
+
+<br>
+Player 1
+WASD - Movement
+Space - Bomb
+<br>
+Player 2
+Arrow Keys - Movement
+Shift - Bomb
+<br>
+
+Click play to start game!
+
+Full app demo available here:
+```
+```
 
 ## Built Using <a name = "built_using"></a>
 - [MongoDB](https://www.mongodb.com/) - Database
