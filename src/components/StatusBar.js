@@ -20,15 +20,23 @@ const StatusBar = React.memo((props) => {
         
         context.fillText('P2', 300, 40)
         
-        // const renderImages = () => {
-        //     const image = new Image()
-        //     image.src = source
-        //     image.onload = () => {
-        //         context.drawImage(image, 0 * 50, 0 * 50)
-        //     }
-        // }
+        const renderImage = (row, source) => {
+            const image = new Image()
+            image.src = source
+            image.onload = () => {
+                context.drawImage(image, row, 40)
+            }
+        }
 
-        // renderImages(row, col, source)
+        players.forEach(p => {
+            let x = 0
+            renderImage(80 + x, bomb)
+            renderImage(210 + x, fire)
+            context.fillText(p.powerups.bombs, 50 + x, 40)
+            context.fillText(p.powerups.fire, 180 + x, 40)
+            x += 300
+        })
+
     }, [players])
 
     return (
