@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Modal } from 'antd'
 import '../stylesheets/GameContainer.css'
 
 export default function GameMenu(props) {
@@ -70,9 +69,9 @@ export default function GameMenu(props) {
                 switch(i) {
                     case 0: playGame(); break;
                     case 1: {
-                        return alert('Feature coming soon!')
-                        // if (user === '') return alert('You must be signed in to play!')
-                        //joinGame()
+                        if (user === '') return alert('You must be signed in to play!')
+                        joinGame()
+                        break;
                     }
                     case 2: {
                         // show modal?
@@ -106,25 +105,6 @@ export default function GameMenu(props) {
     return (
         <div className='menu-container'>
             <canvas id="canvas" className='game-menu' ref={canvasRef} width={650} height={650} onClick={(e) => handleClick(e)} />
-            <Modal
-                visible={visible}
-                onOk={handleModal}
-                onCancel={handleModal} 
-                footer={null}
-                bodyStyle={modalStyle}
-                width={650}
-                 >
-                    <div className='modal-menu'> 
-                        <h1 style={{...modalBodyStyle, fontSize: '50px'}}>How To Play</h1>
-                        <p style={modalBodyStyle}><strong>Player 1:</strong></p>
-                        <p style={modalBodyStyle}>WASD - Movement</p>
-                        <p style={modalBodyStyle}>Spacebar - Plant bomb</p>
-                        <p style={modalBodyStyle}><strong>Player 2: </strong></p>
-                        <p style={modalBodyStyle}>ArrowKeys - Movement</p>
-                        <p style={modalBodyStyle}>Shift - Plant bomb</p>
-
-                    </div>
-            </Modal>
         </div>
     )
 }

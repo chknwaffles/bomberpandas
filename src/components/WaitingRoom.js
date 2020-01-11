@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import '../stylesheets/GameContainer.css'
 
 export default function WaitingRoom(props) {
-    const { user, changeStatus, setSocket, game, socket } = props
+    const { user, game, startGame, changeStatus } = props
     const canvasRef = useRef(null)
     const [path, setPath] = useState()
 
@@ -28,18 +28,10 @@ export default function WaitingRoom(props) {
 
         //listen for messages to start
         if (game.status === 'closed') {
-            socket.send(JSON.stringify(game))
-            changeStatus('ready')
-            setSocket(new WebSocket('ws://localhost:4000/game'))
+            //let's ready up! and start this bad boy
+            startGame()
         }
-
-        socket.onmessage = (e) => {
-            const data = JSON.parse(e.data)
-            console.log(data)
-            changeStatus('ready')
-        }
-
-    }, [game, socket])
+    }, [game])
 
     const handleClick = (e) => {
         const canvas = canvasRef.current

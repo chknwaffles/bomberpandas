@@ -1,5 +1,6 @@
 .menu-container {
     position: relative;
+    cursor: pointer;
 }
 
 .game-container {

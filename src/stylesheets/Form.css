@@ -8,3 +8,58 @@
     height: 650px;
     width: 650px;
 }
+
+.username-label {
+    font-family: ArcadeClassic;
+    font-size: 2em;
+}
+
+.password-label {
+    font-family: ArcadeClassic;
+    font-size: 2em;
+}
+
+input[type=text], select {
+    font-family: ArcadeClassic;
+    font-size: 2em;
+    width: 100%;
+    background-color: gray;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 0px 2px black inset;
+    cursor: crosshair;
+}
+
+input[type=submit] {
+    font-family: ArcadeClassic;
+    font-size: 2em;
+    width: 100%;
+    background-color: #810B06;
+    color: black;
+    font-size: 1.2em;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0px 0px 0px 1px black inset;
+    cursor: pointer;
+}
+
+button[type=button] {
+    font-family: ArcadeClassic;
+    font-size: 2em;
+    width: 100%;
+    background-color: gray;
+    color: black;
+    font-size: 1.2em;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: 2px solid #810B06;
+    border-radius: 4px;
+    box-shadow: 0px 0px 0px 1px black inset;
+    cursor: pointer;
+}
