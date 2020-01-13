@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import io from 'socket.io-client'
 import './stylesheets/App.css';
 import GameContainer from './containers/GameContainer'
 import Form from './components/Form'
@@ -63,7 +64,7 @@ function App() {
             console.log(data)
             setUser(data.username)
             setPage('')
-            setSocket(new WebSocket('ws://localhost:4000/play'))
+            setSocket(io('http://localhost:4000/play'))
         })
         .catch(err => {
             console.error(err)
