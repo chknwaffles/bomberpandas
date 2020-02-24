@@ -3,7 +3,10 @@ import bomb from '../images/bombicon.png'
 import fire from '../images/firepowerupicon.png'
 
 function playerStatusProps(prevPlayer, nextPlayer) {
-    return prevPlayer.powerups === nextPlayer.powerups
+    for(let i = 0; i < prevPlayer.length; i++) {
+        if (prevPlayer[i].powerups === nextPlayer[i].powerups)
+            return true
+    }
 }
 
 const StatusBar = React.memo((props) => {
@@ -11,30 +14,30 @@ const StatusBar = React.memo((props) => {
     const canvasRef = useRef(null)
 
     useEffect(() => {
-        const canvas = canvasRef.current
-        const context = canvas.getContext('2d')
-
-        context.font = '40px Helvetica'
-        context.fillStyle = 'white'
-        context.fillText('P1', 0, 40)
-        
-        context.fillText('P2', 300, 40)
-        
         const renderImage = (row, source) => {
             const image = new Image()
             image.src = source
             image.onload = () => {
-                context.drawImage(image, row, 40)
+                context.drawImage(image, row, 0)
             }
         }
 
+        const canvas = canvasRef.current
+        const context = canvas.getContext('2d')
+        context.clearRect(0, 0, canvas.width, canvas.height)
+
+        context.font = '40px ArcadeClassic'
+        context.fillStyle = 'white'
+        
+        let playerX = 0
         players.forEach(p => {
-            let x = 0
-            renderImage(80 + x, bomb)
-            renderImage(210 + x, fire)
-            context.fillText(p.powerups.bombs, 50 + x, 40)
-            context.fillText(p.powerups.fire, 180 + x, 40)
-            x += 300
+            console.log(p)
+            context.fillText(`P${p.id}`, playerX, 40)
+            renderImage(50 + playerX, bomb)
+            renderImage(150 + playerX, fire)
+            context.fillText(p.powerups.bombs, 110 + playerX, 40)
+            context.fillText(p.powerups.fire, 210 + playerX, 40)
+            playerX += 410
         })
 
     }, [players])

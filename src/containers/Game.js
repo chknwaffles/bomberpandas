@@ -241,8 +241,8 @@ export default function Game(props) {
             }
         }
         if (keys[' ']) {
-            if (nextMove.bombs > 0) {
-                nextMove = { ...nextMove, type: 'P', onBomb: true, powerups: { ...nextMove.powerups, bombs: nextMove.bombs - 1 } }
+            if (nextMove.powerups.bombs > 0) {
+                nextMove = { ...nextMove, type: 'P', onBomb: true, powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs - 1 } }
                 //send to backend
                 let bomb = { type: 'B', x: nextMove.x, y: nextMove.y, powerups: { ...nextMove.powerups }, id: 1 }
                 socket.send(JSON.stringify(bomb))
@@ -336,8 +336,8 @@ export default function Game(props) {
             }
         }
         if (keys['Shift']) {
-            if (nextMove.bombs > 0) {
-                nextMove = { ...nextMove, type: 'P', powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs - 1 }, onBomb: true }
+            if (nextMove.powerups.bombs > 0) {
+                nextMove = { ...nextMove, type: 'P', onBomb: true, powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs - 1 }}
                 //send to backend
                 let bomb = { type: 'B', x: nextMove.x, y: nextMove.y, powerups: { ...nextMove.powerups }, id: 2 }
                 socket.send(JSON.stringify(bomb))

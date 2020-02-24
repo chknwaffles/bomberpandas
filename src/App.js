@@ -8,7 +8,7 @@ import Logo from './components/Logo'
 function App() {
     const [user, setUser] = useState('')
     const [page, setPage] = useState('')
-
+    const [socket, setSocket] = useState(new WebSocket(`ws://localhost:3000/play`))
     const changePage = (newPage) => setPage(newPage)
 
     const renderPage = () => {
@@ -16,6 +16,7 @@ function App() {
             case '': return <GameContainer 
                                 user={user} 
                                 changePage={changePage}
+                                socket={socket}
                             />
             case 'login': return <Form
                                     login={true} 
