@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import io from 'socket.io-client'
+import * as io from 'socket.io-client'
 import './stylesheets/App.css';
 import GameContainer from './containers/GameContainer'
 import Form from './components/Form'
@@ -8,29 +8,14 @@ import Logo from './components/Logo'
 function App() {
     const [user, setUser] = useState('')
     const [page, setPage] = useState('')
-    const [socket, setSocket] = useState(null)
 
     const changePage = (newPage) => setPage(newPage)
-
-    const sendMessage = (data) => {
-        if (socket.readyState === 1) {
-            socket.send(data)
-            console.log('sending data!', data)
-        } else {
-            console.log('WS IS NOT OPEN')
-            socket.onerror = function(event) {
-                console.error("WebSocket error observed:", event);
-            }
-        }
-    }
 
     const renderPage = () => {
         switch(page) {
             case '': return <GameContainer 
                                 user={user} 
                                 changePage={changePage}
-                                socket={socket}
-                                sendMessage={sendMessage}
                             />
             case 'login': return <Form
                                     login={true} 
@@ -64,7 +49,6 @@ function App() {
             console.log(data)
             setUser(data.username)
             setPage('')
-            setSocket(io('http://localhost:4000/play'))
         })
         .catch(err => {
             console.error(err)
@@ -77,7 +61,6 @@ function App() {
         .then(data => {
             setUser('')
             setPage('')
-            setSocket(null)
         })
     }
 
