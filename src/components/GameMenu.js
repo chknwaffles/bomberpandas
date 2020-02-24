@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react'
-import SkyLight from 'react-skylight'
 import '../stylesheets/GameContainer.css'
 
 export default function GameMenu(props) {

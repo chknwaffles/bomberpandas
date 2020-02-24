@@ -1,11 +1,11 @@
 .menu-container {
     position: relative;
-    cursor: pointer;
 }
 
 .game-container {
     position: relative;
     background: rgb(10, 10, 10);
+    cursor: pointer;
 }
 
 .logo-container {

@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import { gridSize, fillGrid, setPlayersPosition, generatePowerUp } from '../utils/Grid'
+import { SocketContext } from '../utils/socket-context'
 import StatusBar from '../components/StatusBar'
 import '../stylesheets/GameContainer.css'
 import panda from '../images/panda.png'
@@ -15,8 +16,11 @@ const SPRITE_SIZE = 50
 let keys = []
 
 export default function Game(props) {
-    const { socket, user, changeStatus, online } = props
+    const { gameId, user, changeStatus, online } = props
+    console.log(online)
     const canvasRef = useRef(null)
+    const socket = useContext(SocketContext)
+
     const [players, setPlayers] = useState(() => {
         let players = (online) ? 
             [ {}, {}, {}, {} ] : 
@@ -27,6 +31,7 @@ export default function Game(props) {
 
         return setPlayersPosition(players, online)
     })
+
     const [grid, setGrid] = useState(() => {
         let initialGrid = [...Array(gridSize)].map(e => Array(gridSize).fill(''))
 
@@ -34,70 +39,75 @@ export default function Game(props) {
         return initialGrid
     })
 
-    //componentdidmount
+    //useffect on socket
     useEffect(() => {
-        const ws = socket
+        socket.on('bombmsg', (bomb) => {
+            console.log(bomb)
+            console.log('hello??')
+        })
         //listen to backend for player movement/bomb explosion
-        ws.onmessage = (e) => {
-            const data = JSON.parse(e.data);
-            let type = data.shift()
-            let id = data.shift()
-            if (type === 'BOMB TARGETS') {
-                // explode in a radius around the target grid element
-                // need to stop fire from happening pass the walls
-                // check based on row and or col make a flag if we hit a wall then we know not to extend past the wall
-                //check from center point
-                setGrid(grid => grid.map(row => row.map(colE => {
-                    let res = data.find(e => e.x === colE.x && e.y === colE.y)
-                    if (res !== undefined ) {
-                        if (colE.type === 'O' ||  colE.type === 'F' || colE.type === 'B') {
-                            return { ...colE, type: 'F' }
-                        } else if (colE.type === 'BW') {
-                            return { ...colE, type: 'BF' }
-                        }
-                        return colE
-                    } else {
-                        return colE
-                    }
-                })))
+            // ws.onmessage = (e) => {
+            //     const data = JSON.parse(e.data);
+            //     let type = data.shift()
+            //     let id = data.shift()
+            //     if (type === 'BOMB TARGETS') {
+            //         // explode in a radius around the target grid element
+            //         // need to stop fire from happening pass the walls
+            //         // check based on row and or col make a flag if we hit a wall then we know not to extend past the wall
+            //         //check from center point
+            //         setGrid(grid => grid.map(row => row.map(colE => {
+            //             let res = data.find(e => e.x === colE.x && e.y === colE.y)
+            //             if (res !== undefined ) {
+            //                 if (colE.type === 'O' ||  colE.type === 'F' || colE.type === 'B') {
+            //                     return { ...colE, type: 'F' }
+            //                 } else if (colE.type === 'BW') {
+            //                     return { ...colE, type: 'BF' }
+            //                 }
+            //                 return colE
+            //             } else {
+            //                 return colE
+            //             }
+            //         })))
 
-                removeFireTimer(data, id);
-            }
-        }
+            //         removeFireTimer(data, id);
+            //     }
+            // }
 
-        //set timer for removing the fire after explosion
-        const removeFireTimer = (data, id) => setTimeout(() => {
-            setGrid(grid => grid.map(row => row.map(colE => {
-                let res = data.find(e => e.x === colE.x && e.y === colE.y)
-                if (res !== undefined) {
-                    if (colE.type === 'P') {
-                        // check death
-                        return { ...colE, type: 'D' }
-                    } else if (colE.type !== 'W') {
-                        if (colE.type === 'BF') {
-                            let obj = generatePowerUp(colE.x, colE.y)
-                            return obj
-                        }
-                        return { ...colE, type: 'O' }
-                    }
-                }
-                return colE
-            })))
-            //set players bombs
-            setPlayers(players => players.map(player => {
-                if (player.id === +id) {
-                    player.bombs++
-                }
-                return player
-            }))
-            clearTimeout(removeFireTimer)
-        }, 300)
+            // //set timer for removing the fire after explosion
+            // const removeFireTimer = (data, id) => setTimeout(() => {
+            //     setGrid(grid => grid.map(row => row.map(colE => {
+            //         let res = data.find(e => e.x === colE.x && e.y === colE.y)
+            //         if (res !== undefined) {
+            //             if (colE.type === 'P') {
+            //                 // check death
+            //                 return { ...colE, type: 'D' }
+            //             } else if (colE.type !== 'W') {
+            //                 if (colE.type === 'BF') {
+            //                     let obj = generatePowerUp(colE.x, colE.y)
+            //                     return obj
+            //                 }
+            //                 return { ...colE, type: 'O' }
+            //             }
+            //         }
+            //         return colE
+            //     })))
+            //     //set players bombs
+            //     setPlayers(players => players.map(player => {
+            //         if (player.id === +id) {
+            //             player.bombs++
+            //         }
+            //         return player
+            //     }))
+            //     clearTimeout(removeFireTimer)
+            // }, 300)
 
         //cleanup on componentdidunmount
+        return () => {
+            
+        }
+    }, [players])
 
-    }, [socket])
-
-    //componentdidupdate on grid state
+    //useffect on grid
     useEffect(() => {
         const renderImage = (context, source, row, col, player=false) => {
             //find player id from row, col
@@ -168,7 +178,7 @@ export default function Game(props) {
                 }
             })
         })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
     }, [grid])
 
     const movePlayer = () => {
@@ -245,7 +255,7 @@ export default function Game(props) {
                 nextMove = { ...nextMove, type: 'P', onBomb: true, powerups: { ...nextMove.powerups, bombs: nextMove.bombs - 1 } }
                 //send to backend
                 let bomb = { type: 'B', x: nextMove.x, y: nextMove.y, powerups: { ...nextMove.powerups }, id: 1 }
-                socket.send(JSON.stringify(bomb))
+                socket.emit('sendlocal', bomb)
             }
         }
 
@@ -285,9 +295,21 @@ export default function Game(props) {
             } 
 
             if (valid.type === 'bombs') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, bombs: nextMove.powerups.bombs + 1 }}
+                nextMove = { 
+                    ...nextMove, 
+                    powerups: {
+                        ...nextMove.powerups,
+                        bombs: nextMove.powerups.bombs + 1 
+                    }
+                }
             } else if (valid.type === 'fire') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, fire: nextMove.powerups.fire + 1 }}
+                nextMove = { 
+                    ...nextMove, 
+                    powerups: {
+                        ...nextMove.powerups, 
+                        fire: nextMove.powerups.fire + 1 
+                    }
+                }
             }
         } 
         if (keys['ArrowDown']) {
@@ -299,9 +321,21 @@ export default function Game(props) {
             } 
 
             if (valid.type === 'bombs') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, bombs: nextMove.powerups.bombs + 1 }}
+                nextMove = { 
+                    ...nextMove, 
+                    powerups: {
+                        ...nextMove.powerups, 
+                        bombs: nextMove.powerups.bombs + 1 
+                    }
+                }
             } else if (valid.type === 'fire') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, fire: nextMove.powerups.fire + 1 }}
+                nextMove = { 
+                    ...nextMove, 
+                    powerups: {
+                        ...nextMove.powerups, 
+                        fire: nextMove.powerups.fire + 1 
+                    }
+                }
             }
 
         }
@@ -314,9 +348,21 @@ export default function Game(props) {
             }
 
             if (valid.type === 'bombs') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, bombs: nextMove.powerups.bombs + 1 }}
+                nextMove = { 
+                    ...nextMove, 
+                    powerups: {
+                        ...nextMove.powerups, 
+                        bombs: nextMove.powerups.bombs + 1 
+                    }
+                }
             } else if (valid.type === 'fire') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, fire: nextMove.powerups.fire + 1 }}
+                nextMove = { 
+                    ...nextMove, 
+                    powerups: {
+                        ...nextMove.powerups, 
+                        fire: nextMove.powerups.fire + 1 
+                    }
+                }
             }
 
         }
@@ -329,18 +375,46 @@ export default function Game(props) {
             }
 
             if (valid.type === 'bombs') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, bombs: nextMove.powerups.bombs + 1 }}
+                nextMove = { 
+                    ...nextMove, 
+                    powerups: {
+                        ...nextMove.powerups,
+                         bombs: nextMove.powerups.bombs + 1 
+                        }
+                    }
             }
             else if (valid.type === 'fire') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, fire: nextMove.powerups.fire + 1 }}
+                nextMove = { 
+                    ...nextMove, 
+                    powerups: {
+                        ...nextMove.powerups, 
+                        fire: nextMove.powerups.fire + 1 
+                    }
+                }
             }
         }
         if (keys['Shift']) {
             if (nextMove.bombs !== 0) {
-                nextMove = { ...nextMove, type: 'P', powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs - 1 }, onBomb: true }
+                nextMove = { 
+                    ...nextMove, 
+                    type: 'P', 
+                    powerups: {
+                        ...nextMove.powerups, 
+                        bombs: nextMove.powerups.bombs - 1 
+                    }, 
+                    onBomb: true 
+                }
                 //send to backend
-                let bomb = { type: 'B', x: nextMove.x, y: nextMove.y, powerups: { ...nextMove.powerups }, id: 2 }
-                socket.send(JSON.stringify(bomb))
+                let bomb = { 
+                    type: 'B', 
+                    x: nextMove.x, 
+                    y: nextMove.y, 
+                    powerups: { 
+                        ...nextMove.powerups 
+                    }, 
+                    id: 2 
+                }
+                socket.emit('sendlocal', bomb)
             }
         }
 
