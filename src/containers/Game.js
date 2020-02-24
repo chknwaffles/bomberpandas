@@ -21,8 +21,8 @@ export default function Game(props) {
         let players = (online) ? 
             [ {}, {}, {}, {} ] : 
             [
-                { type: 'P', id: 1, x: 0, y: 0, bombs: 1, onBomb: false, powerups: { bombs: 1, fire: 1 } },
-                { type: 'P', id: 2, x: 0, y: 0, bombs: 1, onBomb: false, powerups: { bombs: 1, fire: 1 } }
+                { type: 'P', id: 1, x: 0, y: 0, onBomb: false, powerups: { bombs: 1, fire: 1 } },
+                { type: 'P', id: 2, x: 0, y: 0, onBomb: false, powerups: { bombs: 1, fire: 1 } }
             ]
 
         return setPlayersPosition(players, online)
@@ -241,7 +241,7 @@ export default function Game(props) {
             }
         }
         if (keys[' ']) {
-            if (nextMove.bombs !== 0) {
+            if (nextMove.bombs > 0) {
                 nextMove = { ...nextMove, type: 'P', onBomb: true, powerups: { ...nextMove.powerups, bombs: nextMove.bombs - 1 } }
                 //send to backend
                 let bomb = { type: 'B', x: nextMove.x, y: nextMove.y, powerups: { ...nextMove.powerups }, id: 1 }
@@ -336,7 +336,7 @@ export default function Game(props) {
             }
         }
         if (keys['Shift']) {
-            if (nextMove.bombs !== 0) {
+            if (nextMove.bombs > 0) {
                 nextMove = { ...nextMove, type: 'P', powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs - 1 }, onBomb: true }
                 //send to backend
                 let bomb = { type: 'B', x: nextMove.x, y: nextMove.y, powerups: { ...nextMove.powerups }, id: 2 }
