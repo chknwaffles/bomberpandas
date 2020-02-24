@@ -33,6 +33,8 @@ Fireball: Increase radius of bomb explosion by 1 tile
 
 Bomb: Increase the amount of bombs you can place down
 
+
+
 Full app demo available here:
 ```
 ```
