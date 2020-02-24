@@ -28,7 +28,9 @@ Player 2
 Arrow Keys - Movement
 Shift - Bomb
 
-Click play to start game!
+Power Ups (walk over them to pick up):
+Fireball: Increase radius of bomb explosion by 1 tile
+Bomb: Increase the amount of bombs you can place down
 
 Full app demo available here:
 ```
