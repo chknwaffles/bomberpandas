@@ -8,7 +8,7 @@ import Form from './components/Form'
 import Logo from './components/Logo'
 
 
-const socket = io(`https://bomber-game.herokuapp.com/`)
+const socket = io(`http://bomber-game.herokuapp.com/`)
 
 function App() {
     const [user, setUser] = useState('')
