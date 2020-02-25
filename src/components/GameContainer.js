@@ -5,6 +5,8 @@ import WaitingRoom from './WaitingRoom'
 import EndGame from './EndGame'
 import Game from './Game'
 
+var backendUrl = process.env.BACKEND_URL || 'http://localhost:4000'
+
 export default function GameContainer(props) {
     const { user, changePage } = props
     const [status, setStatus] = useState('')
