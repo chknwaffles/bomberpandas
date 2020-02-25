@@ -1,7 +1,3 @@
-.menu-container {
-    position: relative;
-}
-
 .game-container {
     position: relative;
     background: rgb(10, 10, 10);
@@ -11,10 +7,6 @@
 .logo-container {
     position: static;
 }
-
-.room-container {
-    position: relative;
-} 
 
 kbd {
     font-family: 'ArcadeClassic';
