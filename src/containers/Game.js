@@ -105,7 +105,7 @@ export default function Game(props) {
         return () => {
             
         }
-    }, [players])
+    }, [players, socket])
 
     //useffect on grid
     useEffect(() => {
