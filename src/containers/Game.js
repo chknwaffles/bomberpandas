@@ -101,6 +101,7 @@ export default function Game(props) {
     }, [socket])
 
     useEffect(() => {
+        let flag = false
         const renderImage = (context, source, row, col, player=false) => {
             let targetPlayer = players.find(player => player.x === row && player.y === col)
             const image = new Image()
@@ -120,16 +121,13 @@ export default function Game(props) {
         const context = canvas.getContext('2d')
 
         let updatedGrid = grid.map(e => e.slice())
-        
+
         updatedGrid.forEach((row, i) => {
             row.forEach((colE, j) => {
-                //don't re-render if previous was the same as current
-                if (previousGrid != null) {
-                    console.log('not rerendering this')
-                    console.log('row: ', i, 'col:', j)
-                    if (previousGrid[i][j] === updatedGrid[i][j])
-                        return colE;
-                }
+                    //don't re-render if previous was the same as current
+                if (previousGrid[i][j].type === updatedGrid[i][j].type && flag)
+                    return
+                    
                 switch(colE.type) {
                     case 'W': renderImage(context, wall, colE.x, colE.y); break;
                     case 'BW': renderImage(context, breakablewall, colE.x, colE.y); break;
@@ -147,7 +145,7 @@ export default function Game(props) {
                         }
                         //disable key functions for the player that died
 
-                        setTimeout(() => changeStatus(prevStatus => prevStatus = 'defeat'), 5000)
+                        setTimeout(() => changeStatus(prevStatus => prevStatus = 'defeat'), 6000)
                         break
                     }
                     case 'P': {
@@ -170,6 +168,9 @@ export default function Game(props) {
             })
         })
 
+        if (!flag) 
+            flag = true
+
     }, [grid, players, online])
 
     const movePlayer = () => {
@@ -181,6 +182,7 @@ export default function Game(props) {
         nextMove = { ...player, onBomb: false }
 
         let updatedGrid = grid.map(e => e.slice())
+        previousGrid.current = updatedGrid 
 
         if (keys['w']) {
             nextMove = { ...nextMove, y: nextMove.y - 1 }
@@ -190,11 +192,7 @@ export default function Game(props) {
                 return
             }
 
-            if (valid.type === 'bombs') {
-                nextMove = { ...nextMove, powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs + 1 }}
-            } else if (valid.type === 'fire') {
-                nextMove = { ...nextMove, powerups: { ...nextMove.powerups, fire: nextMove.powerups.fire + 1 }}
-            }
+            nextMove = itemCheck(valid.type, nextMove)
         }
         if (keys['s']) {
             nextMove = { ...nextMove, y: nextMove.y + 1 }
@@ -204,11 +202,7 @@ export default function Game(props) {
                 return
             }
 
-            if (valid.type === 'bombs') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, bombs: nextMove.powerups.bombs + 1 }}
-            } else if (valid.type === 'fire') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, fire: nextMove.powerups.fire + 1 }}
-            }
+            nextMove = itemCheck(valid.type, nextMove)
         }
         if (keys['a']) {
             nextMove = { ...nextMove, x: nextMove.x - 1 }
@@ -218,11 +212,7 @@ export default function Game(props) {
                 return
             }
             
-            if (valid.type === 'bombs') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, bombs: nextMove.powerups.bombs + 1 }}
-            } else if (valid.type === 'fire') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, fire: nextMove.powerups.fire + 1 }}
-            }
+            nextMove = itemCheck(valid.type, nextMove)
         }
         if (keys['d']) {
             nextMove = { ...nextMove, x: nextMove.x + 1 }
@@ -232,16 +222,12 @@ export default function Game(props) {
                 return
             } 
             
-            if (valid.type === 'bombs') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, bombs: nextMove.powerups.bombs + 1 }}
-            } else if (valid.type === 'fire') {
-                nextMove = { ...nextMove, powerups: {...nextMove.powerups, fire: nextMove.powerups.fire + 1 }}
-            }
+            nextMove = itemCheck(valid.type, nextMove)
         }
         if (keys[' ']) {
-            if (nextMove.bombs !== 0) {
+            if (nextMove.powerups.bombs > 0) {
                 nextMove = { ...nextMove, type: 'P', onBomb: true, powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs - 1 } }
-                //send to backend
+
                 let bomb = { type: 'B', x: nextMove.x, y: nextMove.y, powerups: { ...nextMove.powerups }, id: 1 }
                 socket.emit('sendlocal', bomb)
             }
@@ -270,6 +256,9 @@ export default function Game(props) {
         nextMove = { ...player, onBomb: false }
 
         let updatedGrid = grid.map(e => e.slice())
+        if (previousGrid != null) {
+            previousGrid.current = updatedGrid
+        }
 
         if (keys['ArrowUp']) {
             nextMove = { ...nextMove, y: nextMove.y - 1 }
@@ -279,23 +268,7 @@ export default function Game(props) {
                 return
             } 
 
-            if (valid.type === 'bombs') {
-                nextMove = { 
-                    ...nextMove, 
-                    powerups: {
-                        ...nextMove.powerups,
-                        bombs: nextMove.powerups.bombs + 1 
-                    }
-                }
-            } else if (valid.type === 'fire') {
-                nextMove = { 
-                    ...nextMove, 
-                    powerups: {
-                        ...nextMove.powerups, 
-                        fire: nextMove.powerups.fire + 1 
-                    }
-                }
-            }
+            nextMove = itemCheck(valid.type, nextMove)
         } 
         if (keys['ArrowDown']) {
             nextMove = { ...nextMove, y: nextMove.y + 1 }
@@ -305,24 +278,7 @@ export default function Game(props) {
                 return
             } 
 
-            if (valid.type === 'bombs') {
-                nextMove = { 
-                    ...nextMove, 
-                    powerups: {
-                        ...nextMove.powerups, 
-                        bombs: nextMove.powerups.bombs + 1 
-                    }
-                }
-            } else if (valid.type === 'fire') {
-                nextMove = { 
-                    ...nextMove, 
-                    powerups: {
-                        ...nextMove.powerups, 
-                        fire: nextMove.powerups.fire + 1 
-                    }
-                }
-            }
-
+            nextMove = itemCheck(valid.type, nextMove)
         }
         if (keys['ArrowLeft']) {
             nextMove = { ...nextMove, x: nextMove.x - 1 }
@@ -332,24 +288,7 @@ export default function Game(props) {
                 return
             }
 
-            if (valid.type === 'bombs') {
-                nextMove = { 
-                    ...nextMove, 
-                    powerups: {
-                        ...nextMove.powerups, 
-                        bombs: nextMove.powerups.bombs + 1 
-                    }
-                }
-            } else if (valid.type === 'fire') {
-                nextMove = { 
-                    ...nextMove, 
-                    powerups: {
-                        ...nextMove.powerups, 
-                        fire: nextMove.powerups.fire + 1 
-                    }
-                }
-            }
-
+            nextMove = itemCheck(valid.type, nextMove)
         }
         if (keys['ArrowRight']) {
             nextMove = { ...nextMove, x: nextMove.x + 1 }
@@ -359,46 +298,13 @@ export default function Game(props) {
                 return
             }
 
-            if (valid.type === 'bombs') {
-                nextMove = { 
-                    ...nextMove, 
-                    powerups: {
-                        ...nextMove.powerups,
-                         bombs: nextMove.powerups.bombs + 1 
-                        }
-                    }
-            }
-            else if (valid.type === 'fire') {
-                nextMove = { 
-                    ...nextMove, 
-                    powerups: {
-                        ...nextMove.powerups, 
-                        fire: nextMove.powerups.fire + 1 
-                    }
-                }
-            }
+            nextMove = itemCheck(valid.type, nextMove)
         }
         if (keys['Shift']) {
-            if (nextMove.bombs !== 0) {
-                nextMove = { 
-                    ...nextMove, 
-                    type: 'P', 
-                    powerups: {
-                        ...nextMove.powerups, 
-                        bombs: nextMove.powerups.bombs - 1 
-                    }, 
-                    onBomb: true 
-                }
-                //send to backend
-                let bomb = { 
-                    type: 'B', 
-                    x: nextMove.x, 
-                    y: nextMove.y, 
-                    powerups: { 
-                        ...nextMove.powerups 
-                    }, 
-                    id: 2 
-                }
+            if (nextMove.powerups.bombs > 0) {
+                nextMove = { ...nextMove, type: 'P', onBomb: true, powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs - 1 }}
+
+                let bomb = { id: 2, type: 'B', x: nextMove.x, y: nextMove.y, powerups: { ...nextMove.powerups }}
                 socket.emit('sendlocal', bomb)
             }
         }
@@ -421,6 +327,15 @@ export default function Game(props) {
         if (grid[row][col].type === 'FP') return { status: true, type: 'fire' }
 
         return { status: true }
+    }
+
+    const itemCheck = (type, nextMove) => {
+        if (type === 'bombs') {
+            nextMove = { ...nextMove, powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs++ }}
+        } else if (type === 'fire') {
+            nextMove = { ...nextMove, powerups: { ...nextMove.powerups, fire: nextMove.powerups.fire++ }}
+        }
+        return nextMove
     }
 
     const handleDownKey = (e) => {

@@ -75,11 +75,7 @@ export default function GameMenu(props) {
                         joinGame()
                         break;
                     }
-                    case 2: {
-                        // show modal?
-                        setVisible(true)
-                        break;
-                    }
+                    case 2: setVisible(true); break;
                     case 3: changePage((user === '') ? 'login' : 'profile'); break;
                     case 4: changePage((user === '') ? 'signup' : 'logout'); break;
                     default: break;
@@ -151,3 +147,4 @@ export default function GameMenu(props) {
             </Modal>
         </div>
     )
+}
