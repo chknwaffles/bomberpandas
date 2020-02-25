@@ -31,7 +31,6 @@ const StatusBar = React.memo((props) => {
         
         let playerX = 0
         players.forEach(p => {
-            console.log(p)
             context.fillText(`P${p.id}`, playerX, 40)
             renderImage(50 + playerX, bomb)
             renderImage(150 + playerX, fire)

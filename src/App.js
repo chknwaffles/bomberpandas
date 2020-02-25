@@ -1,23 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import * as io from 'socket.io-client'
-import './stylesheets/App.css';
+import { SocketContext } from './utils/socket-context'
+import './stylesheets/App.css'
 import GameContainer from './containers/GameContainer'
 import Form from './components/Form'
 import Logo from './components/Logo'
 
+const socket = io(`http://localhost:4000/`)
+
 function App() {
     const [user, setUser] = useState('')
     const [page, setPage] = useState('')
-    const [socket, setSocket] = useState(new WebSocket(`ws://localhost:3000/play`))
+
     const changePage = (newPage) => setPage(newPage)
 
     const renderPage = () => {
         switch(page) {
-            case '': return <GameContainer 
-                                user={user} 
-                                changePage={changePage}
-                                socket={socket}
-                            />
             case 'login': return <Form
                                     login={true} 
                                     changePage={changePage} 
@@ -31,7 +29,10 @@ function App() {
             case 'profile': break;
             case 'about': break;
             case 'logout': logOut(); break;
-            default: break;
+            default: return <GameContainer 
+                                user={user}
+                                changePage={changePage}
+                            />
         }
     }
 
@@ -66,10 +67,12 @@ function App() {
     }
 
     return (
-        <div className="App">
-            <Logo />
-            {renderPage()}
-        </div>
+        <SocketContext.Provider value={socket} >
+            <div className="App">
+                <Logo />
+                {renderPage()}
+            </div>
+        </SocketContext.Provider>
     );
 }
 
