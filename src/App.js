@@ -7,8 +7,8 @@ import Profile from './components/Profile'
 import Form from './components/Form'
 import Logo from './components/Logo'
 
-
-const socket = io(`http://bomber-game.herokuapp.com/`)
+var backendUrl = process.env.BACKEND_URL || 'http://localhost:4000'
+const socket = io(backendUrl)
 
 function App() {
     const [user, setUser] = useState('')
@@ -39,7 +39,7 @@ function App() {
     }
 
     const handleForm = (fields, login) => {
-        let url = (login) ? 'http://bomber-game.herokuapp.com/login' : 'http://bomber-game.herokuapp.com/register'
+        let url = (login) ? `${backendUrl}/login` : `${backendUrl}/register`
         fetch(url, {
             method: 'POST',
             headers: {
@@ -59,7 +59,7 @@ function App() {
     }
 
     const logOut = () => {
-        fetch('http://bomber-game.herokuapp.com/logout')
+        fetch(`${backendUrl}/logout`)
         .then(r => r.json())
         .then(data => {
             console.log('logging out')

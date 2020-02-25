@@ -19,7 +19,7 @@ export default function GameContainer(props) {
 
     //for online functionality TODO
     const joinGame = () => {
-        fetch('http://bomber-game.herokuapp.com/joingame', {
+        fetch(`${backendUrl}/joingame`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
