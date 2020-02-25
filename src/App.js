@@ -39,7 +39,7 @@ function App() {
     }
 
     const handleForm = (fields, login) => {
-        let url = (login) ? 'https://bomber-game.herokuapp.com/login' : 'https://bomber-game.herokuapp.com/register'
+        let url = (login) ? 'http://bomber-game.herokuapp.com/login' : 'http://bomber-game.herokuapp.com/register'
         fetch(url, {
             method: 'POST',
             headers: {
@@ -59,7 +59,7 @@ function App() {
     }
 
     const logOut = () => {
-        fetch('https://bomber-game.herokuapp.com/logout')
+        fetch('http://bomber-game.herokuapp.com/logout')
         .then(r => r.json())
         .then(data => {
             console.log('logging out')
