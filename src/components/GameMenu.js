@@ -151,4 +151,3 @@ export default function GameMenu(props) {
             </Modal>
         </div>
     )
-}
