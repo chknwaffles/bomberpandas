@@ -331,9 +331,9 @@ export default function Game(props) {
 
     const itemCheck = (type, nextMove) => {
         if (type === 'bombs') {
-            nextMove = { ...nextMove, powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs++ }}
+            return { ...nextMove, powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs + 1 }}
         } else if (type === 'fire') {
-            nextMove = { ...nextMove, powerups: { ...nextMove.powerups, fire: nextMove.powerups.fire++ }}
+            return { ...nextMove, powerups: { ...nextMove.powerups, fire: nextMove.powerups.fire + 1 }}
         }
         return nextMove
     }
