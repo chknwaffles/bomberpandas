@@ -8,7 +8,7 @@ import Form from './components/Form'
 import Logo from './components/Logo'
 
 
-const socket = io(`http://localhost:4000/`)
+const socket = io(`https://bomber-game.herokuapp.com/`)
 
 function App() {
     const [user, setUser] = useState('')
@@ -39,7 +39,7 @@ function App() {
     }
 
     const handleForm = (fields, login) => {
-        let url = (login) ? 'http://localhost:4000/login' : 'http://localhost:4000/register'
+        let url = (login) ? 'https://bomber-game.herokuapp.com/login' : 'https://bomber-game.herokuapp.com/register'
         fetch(url, {
             method: 'POST',
             headers: {
@@ -59,7 +59,7 @@ function App() {
     }
 
     const logOut = () => {
-        fetch('http://localhost:4000/logout')
+        fetch('https://bomber-game.herokuapp.com/logout')
         .then(r => r.json())
         .then(data => {
             console.log('logging out')
