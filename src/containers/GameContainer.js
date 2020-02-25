@@ -37,18 +37,7 @@ export default function GameContainer(props) {
 
     const startGame = () => {
         setStatus('ready')
-        socket.emit('game-ready', game)
     }
-
-    useEffect(() => {
-        socket.on('connect', s => {
-            if (status === 'local') {
-                // will need to change this to some localgameid variable
-            } else {
-                // we need to check the gameid for the online rooms
-            }
-        })
-    }, [status, socket])
 
     const renderByStatus = () => {
         switch(status) {

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import * as io from 'socket.io-client'
 import { SocketContext } from './utils/socket-context'
-import './stylesheets/App.css';
+import './stylesheets/App.css'
 import GameContainer from './containers/GameContainer'
 import Form from './components/Form'
 import Logo from './components/Logo'
