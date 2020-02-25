@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef, useContext } from 'react'
 import { gridSize, fillGrid, setPlayersPosition, generatePowerUp } from '../utils/Grid'
 import { SocketContext } from '../utils/socket-context'
 import usePrevious from '../utils/usePrevious'
-import StatusBar from '../components/StatusBar'
-import '../stylesheets/GameContainer.css'
+import StatusBar from './StatusBar'
+import './Game.css'
 import panda from '../images/panda.png'
 import bomb from '../images/bombicon.png'
 import skull from '../images/skull.png'
@@ -363,7 +363,10 @@ export default function Game(props) {
             <div className='game-container'>
                 <canvas ref={canvasRef} className='game' width={650} height={650} tabIndex={0} onKeyDown={(e) => handleDownKey(e)} onKeyUp={(e) => handleUpKey(e)} />
             </div>
-            <StatusBar players={players} />
+            <div className='statusbar-container'>
+                <StatusBar player={players[0]} />
+                <StatusBar player={players[1]} />
+            </div>
             {/* <Chat socket={socket} user={user} /> */}
         </React.Fragment>
     )

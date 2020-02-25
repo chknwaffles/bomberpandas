@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import '../stylesheets/Form.css'
+import './Form.css'
 
 export default function FormContainer(props) {
     const { login, changePage, handleForm } = props

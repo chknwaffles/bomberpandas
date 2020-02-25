@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import * as io from 'socket.io-client'
 import { SocketContext } from './utils/socket-context'
-import './stylesheets/App.css'
-import GameContainer from './containers/GameContainer'
+import './App.css'
+import GameContainer from './components/GameContainer'
+import Profile from './components/Profile'
 import Form from './components/Form'
 import Logo from './components/Logo'
+
 
 const socket = io(`http://localhost:4000/`)
 
@@ -26,7 +28,7 @@ function App() {
                                     changePage={changePage} 
                                     handleForm={handleForm} 
                                     />
-            case 'profile': break;
+            case 'profile': return <Profile changePage={changePage} user={user} />
             case 'about': break;
             case 'logout': logOut(); break;
             default: return <GameContainer 
@@ -48,12 +50,11 @@ function App() {
         })
         .then(r => r.json())
         .then(data => {
-            console.log(data)
             setUser(data.username)
             setPage('')
         })
         .catch(err => {
-            console.error(err)
+            alert('Username already registered')
         })
     }
 
@@ -61,6 +62,7 @@ function App() {
         fetch('http://localhost:4000/logout')
         .then(r => r.json())
         .then(data => {
+            console.log('logging out')
             setUser('')
             setPage('')
         })

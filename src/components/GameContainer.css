@@ -16,40 +16,6 @@
     position: relative;
 } 
 
-.endgame-screen {
-    border: white solid 2px;
-    border-radius: 4px;
-    box-shadow: 0px 0px 0px 2px black inset;
-    position: relative;
-    background: gray
-}
-
-.game-menu {
-    border: white solid 2px;
-    border-radius: 4px;
-    box-shadow: 0px 0px 0px 2px black inset;
-    background: gray
-}
-
-.game {
-    outline: black solid 3px;
-}
-
-.game-logo {
-    background: rgb(10, 10, 10);
-}
-
-.waiting-room {
-    background: gray;
-    border: white solid 2px;
-    border-radius: 4px;
-    box-shadow: 0px 0px 0px 2px black inset;
-}
-
-modal-menu {
-    font-family: 'ArcadeClassic'
-}
-
 kbd {
     font-family: 'ArcadeClassic';
     background-color: #eee;

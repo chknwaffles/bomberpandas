@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Modal from 'react-modal'
-import '../stylesheets/GameContainer.css'
+import './GameMenu.css'
 
 export default function GameMenu(props) {
     const { user, changeStatus, changePage, joinGame, playGame } = props

@@ -1,16 +1,15 @@
 import React, { useEffect, useRef } from 'react'
+import './StatusBar.css'
 import bomb from '../images/bombicon.png'
 import fire from '../images/firepowerupicon.png'
 
 function playerStatusProps(prevPlayer, nextPlayer) {
-    for(let i = 0; i < prevPlayer.length; i++) {
-        if (prevPlayer[i].powerups === nextPlayer[i].powerups)
-            return true
-    }
+    if (prevPlayer.powerups === nextPlayer.powerups)
+        return true
 }
 
 const StatusBar = React.memo((props) => {
-    const { players } = props
+    const { player } = props
     const canvasRef = useRef(null)
 
     useEffect(() => {
@@ -29,20 +28,16 @@ const StatusBar = React.memo((props) => {
         context.font = '40px ArcadeClassic'
         context.fillStyle = 'white'
         
-        let playerX = 0
-        players.forEach(p => {
-            context.fillText(`P${p.id}`, playerX, 40)
-            renderImage(50 + playerX, bomb)
-            renderImage(150 + playerX, fire)
-            context.fillText(p.powerups.bombs, 110 + playerX, 40)
-            context.fillText(p.powerups.fire, 210 + playerX, 40)
-            playerX += 410
-        })
+        context.fillText(`P${player.id}`, 0, 40)
+        renderImage(50, bomb)
+        renderImage(150, fire)
+        context.fillText(player.powerups.bombs, 110, 40)
+        context.fillText(player.powerups.fire, 210, 40)
 
-    }, [players])
+    }, [player])
 
     return (
-        <canvas ref={canvasRef} className='game' width={650} height={50} />
+        <canvas ref={canvasRef} className='status-bar' width={325} height={50} />
     )
 }, playerStatusProps)
 

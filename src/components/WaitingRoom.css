@@ -1,0 +1,10 @@
+.room-container {
+    position: relative;
+} 
+
+.waiting-room {
+    background: gray;
+    border: white solid 2px;
+    border-radius: 4px;
+    box-shadow: 0px 0px 0px 2px black inset;
+}

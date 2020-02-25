@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { SocketContext } from '../utils/socket-context'
-import GameMenu from '../components/GameMenu'
-import WaitingRoom from '../components/WaitingRoom'
-import EndGame from '../components/EndGame'
+import GameMenu from './GameMenu'
+import WaitingRoom from './WaitingRoom'
+import EndGame from './EndGame'
 import Game from './Game'
 
 export default function GameContainer(props) {

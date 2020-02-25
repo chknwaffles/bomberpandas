@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import '../stylesheets/GameContainer.css';
+import './EndGame.css';
 
 export default function EndGame(props) {
     const { condition, changeStatus } = props
@@ -23,8 +23,7 @@ export default function EndGame(props) {
         context.fillText('back to menu', 185, 490)
 
         setPath(menuPath)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [condition])
 
     const handleClick = (e) => {
         const canvas = canvasRef.current
@@ -33,12 +32,20 @@ export default function EndGame(props) {
         const x = e.clientX - targetButton.left
         const y = e.clientY - targetButton.top
 
-        if (context.isPointInPath(path, x, y)) {
+        if (context.isPointInPath(path, x, y))
             changeStatus('')
-        }
     }
 
     return (
-        <canvas id="canvas" className='endgame-screen' ref={canvasRef} width={650} height={650} onClick={(e) => handleClick(e)} />
+        <div className='endgame-container'>
+            <canvas 
+                id='canvas'
+                className='endgame-screen'
+                ref={canvasRef}
+                width={650}
+                height={650}
+                onClick={(e) => handleClick(e)}
+            />
+        </div>
     )
 }

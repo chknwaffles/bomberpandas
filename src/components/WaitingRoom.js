@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import '../stylesheets/GameContainer.css'
+import './WaitingRoom.css'
 
 export default function WaitingRoom(props) {
     const { user, game, startGame, changeStatus } = props

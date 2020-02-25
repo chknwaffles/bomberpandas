@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import '../stylesheets/GameContainer.css';
+import './Logo.css';
 import logo from '../images/gamelogo.png'
 
 export default function Logo() {
@@ -13,6 +13,8 @@ export default function Logo() {
         image.onload = () => {
             context.drawImage(image, 0, 0)
         }
+
+        //todo some cool animations
     }, [])
 
     return (

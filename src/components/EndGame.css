@@ -1,0 +1,7 @@
+.endgame-screen {
+    border: white solid 2px;
+    border-radius: 4px;
+    box-shadow: 0px 0px 0px 2px black inset;
+    position: relative;
+    background: gray
+}
