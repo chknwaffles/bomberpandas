@@ -34,6 +34,7 @@ function App() {
             default: return <GameContainer 
                                 user={user}
                                 changePage={changePage}
+                                backendUrl={backendUrl}
                             />
         }
     }
