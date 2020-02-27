@@ -3,13 +3,18 @@ import './StatusBar.css'
 import bomb from '../images/bombicon.png'
 import fire from '../images/firepowerupicon.png'
 
-function playerStatusProps(prevPlayer, nextPlayer) {
-    if (prevPlayer.powerups === nextPlayer.powerups)
-        return true
+function playerStatusProps(prevProps, nextProps) {
+    if (prevProps.player.id === 1) {
+        console.log(prevProps.player.powerups)
+        console.log(nextProps.player.powerups)
+    }
+
+    return prevProps.player.powerups === nextProps.player.powerups
 }
 
-const StatusBar = React.memo((props) => {
+function StatusBar(props) {
     const { player } = props
+    console.log(player)
     const canvasRef = useRef(null)
 
     useEffect(() => {
@@ -39,6 +44,8 @@ const StatusBar = React.memo((props) => {
     return (
         <canvas ref={canvasRef} className='status-bar' width={325} height={50} />
     )
-}, playerStatusProps)
+}
 
-export default StatusBar
+const MemoizedStatusBar = React.memo(StatusBar, playerStatusProps)
+
+export default MemoizedStatusBar

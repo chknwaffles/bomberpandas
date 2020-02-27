@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import { SocketContext } from '../utils/socket-context'
 import GameMenu from './GameMenu'
 import WaitingRoom from './WaitingRoom'
@@ -78,6 +78,7 @@ export default function GameContainer(props) {
                                 changeStatus={changeStatus} 
                                 changePage={changePage}
                                 playGame={playGame}
+                                joinGame={joinGame}
                             />
         }
     }

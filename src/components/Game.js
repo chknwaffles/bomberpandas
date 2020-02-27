@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
+import ReactDOM from 'react-dom'
 import { gridSize, fillGrid, setPlayersPosition, generatePowerUp } from '../utils/Grid'
 import { SocketContext } from '../utils/socket-context'
 import usePrevious from '../utils/usePrevious'
@@ -24,8 +25,8 @@ export default function Game(props) {
         let players = (online) ? 
             [ {}, {}, {}, {} ] : 
             [
-                { type: 'P', id: 1, x: 0, y: 0, bombs: 1, onBomb: false, powerups: { bombs: 1, fire: 1 } },
-                { type: 'P', id: 2, x: 0, y: 0, bombs: 1, onBomb: false, powerups: { bombs: 1, fire: 1 } }
+                { type: 'P', id: 1, x: 0, y: 0, onBomb: false, powerups: { bombs: 1, fire: 1 } },
+                { type: 'P', id: 2, x: 0, y: 0, onBomb: false, powerups: { bombs: 1, fire: 1 } }
             ]
 
         return setPlayersPosition(players, online)
@@ -46,10 +47,6 @@ export default function Game(props) {
             let type = bomb.shift()
             let playerIndex = bomb.shift()
             if (type === 'BOMB TARGETS') {
-                // explode in a radius around the target grid element
-                // need to stop fire from happening pass the walls
-                // check based on row and or col make a flag if we hit a wall then we know not to extend past the wall
-                //check from center point
                 setGrid(grid => grid.map(row => row.map(colE => {
                     let res = bomb.find(e => e.x === colE.x && e.y === colE.y)
                     if (res !== undefined ) {
@@ -63,29 +60,34 @@ export default function Game(props) {
                         return colE
                     }
                 })))
-
+                
                 removeFire = () => setTimeout(() => {
-                    setGrid(grid => grid.map(row => row.map(colE => {
-                        let res = bomb.find(e => e.x === colE.x && e.y === colE.y)
-                        if (res !== undefined) {
-                            if (colE.type === 'P') {
-                                // check death
-                                return { ...colE, type: 'D' }
-                            } else if (colE.type === 'BF') {
-                                    let obj = generatePowerUp(colE.x, colE.y)
-                                    return obj
-                            } else if (colE.type === 'F') 
-                                return { ...colE, type: 'O' }
-                        }
-                        return colE
-                    })))
-                    //set players bombs
-                    setPlayers(players => players.map(player => {
-                        if (player.id === +playerIndex) {
-                            player.powerups.bombs++
-                        }
-                        return player
-                    }))
+                    ReactDOM.unstable_batchedUpdates(() => {
+                        setGrid(grid => grid.map(row => row.map(colE => {
+                            let res = bomb.find(e => e.x === colE.x && e.y === colE.y)
+    
+                            if (res !== undefined) {
+                                if (colE.type === 'P') {
+                                    // check death
+                                    return { ...colE, type: 'D' }
+                                } else if (colE.type === 'BF') {
+                                        let obj = generatePowerUp(colE.x, colE.y)
+                                        return obj
+                                } else if (colE.type === 'F') 
+                                    return { ...colE, type: 'O' }
+                            }
+                            return colE
+                        })))
+                        
+                        setPlayers(players => {
+                            for(let i = 0; i < players.length; i++) {
+                                if (players[i].id === +playerIndex) {
+                                    players[i] = { ...players[i], powerups: { ...players[i].powerups, bombs: players[i].powerups.bombs + 1 }} 
+                                }
+                            }
+                            return players
+                        })
+                    })
 
                     clearTimeout(removeFire)
                 }, 300)
@@ -140,7 +142,8 @@ export default function Game(props) {
                         renderImage(context, skull, colE.x, colE.y)
                         if (!online) {
                             let targetPlayer = players.find(player => player.x === colE.x && player.y === colE.y)
-                            setTimeout(() => changeStatus(prevStatus => (prevStatus = (targetPlayer.id === 1) ? 'endgame2' : 'endgame1')), 3000)
+                            setTimeout(() => changeStatus(prevStatus => (prevStatus = (targetPlayer.id === 1) ? 'endgame2' : 'endgame1')), 4000)
+                            alert(`Player ${targetPlayer.id} has died!`)
                             break
                         }
                         //disable key functions for the player that died
@@ -171,7 +174,7 @@ export default function Game(props) {
         if (!flag) 
             flag = true
 
-    }, [grid, players, online])
+    }, [grid, previousGrid, players, online, changeStatus])
 
     const movePlayer = () => {
         let player = players[0]
@@ -228,7 +231,7 @@ export default function Game(props) {
             if (nextMove.powerups.bombs > 0) {
                 nextMove = { ...nextMove, type: 'P', onBomb: true, powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs - 1 } }
 
-                let bomb = { type: 'B', x: nextMove.x, y: nextMove.y, powerups: { ...nextMove.powerups }, id: 1 }
+                let bomb = { type: 'B', id: 1, x: nextMove.x, y: nextMove.y, powerups: { ...nextMove.powerups } }
                 socket.emit('sendlocal', bomb)
             }
         }
@@ -243,9 +246,8 @@ export default function Game(props) {
             //send to backend for online
             socket.send(JSON.stringify(updatedGrid))
         } else {
-            setPlayers([nextMove, players[1]])
+            setPlayers(players => [nextMove, players[1]])
         }
-
         setGrid(updatedGrid)
     }
 
@@ -302,7 +304,7 @@ export default function Game(props) {
         }
         if (keys['Shift']) {
             if (nextMove.powerups.bombs > 0) {
-                nextMove = { ...nextMove, type: 'P', onBomb: true, powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs - 1 }}
+                nextMove = { ...nextMove, type: 'P', onBomb: true, powerups: { ...nextMove.powerups, bombs: nextMove.powerups.bombs-- }}
 
                 let bomb = { id: 2, type: 'B', x: nextMove.x, y: nextMove.y, powerups: { ...nextMove.powerups }}
                 socket.emit('sendlocal', bomb)
@@ -311,7 +313,8 @@ export default function Game(props) {
 
         updatedGrid[prevMove.x][prevMove.y].type = (prevMove.onBomb) ? 'B' : 'O'
         updatedGrid[nextMove.x][nextMove.y] = (nextMove.onBomb) ? {...nextMove, type: 'B'} : nextMove
-        setPlayers([players[0], nextMove])
+
+        setPlayers(players => [players[0], nextMove])
         setGrid(updatedGrid)
     }
 
