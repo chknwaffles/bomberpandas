@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { SocketContext } from '../utils/socket-context'
 import GameMenu from './GameMenu'
 import WaitingRoom from './WaitingRoom'
@@ -28,16 +28,21 @@ export default function GameContainer(props) {
         })
         .then(r => r.json())
         .then(data => {
-            console.log(data)
+            debugger
             setStatus('waiting')
             setGame(data)
-            console.log('game data', data)
         })
     }
 
     const startGame = () => {
         setStatus('ready')
     }
+
+    useEffect(() => {
+        socket.on('readystate', gameData => {
+            
+        })
+    }, [game])
 
     const renderByStatus = () => {
         switch(status) {

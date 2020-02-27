@@ -7,7 +7,6 @@ export default function WaitingRoom(props) {
     const [path, setPath] = useState()
 
     useEffect(() => {
-        //draw the canvas
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
         const menuPath = new Path2D()
@@ -15,7 +14,7 @@ export default function WaitingRoom(props) {
         
         context.font = '30px Helvetica'
         context.fillText('waiting for players to connect...', 120, 150)
-        context.fillText(`(1 / 2) players have connected`, 120, 200)
+        context.fillText(`(${game.players.length} / 2) players have connected`, 120, 200)
 
         context.lineWidth = 4
         menuPath.rect(75, 480, buttonSize[0], buttonSize[1])
@@ -25,12 +24,6 @@ export default function WaitingRoom(props) {
         context.fillText('back to menu', 120, 580)
 
         setPath(menuPath)
-
-        //listen for messages to start
-        if (game.status === 'closed') {
-            //let's ready up! and start this bad boy
-            startGame()
-        }
     }, [game])
 
     const handleClick = (e) => {
@@ -40,9 +33,8 @@ export default function WaitingRoom(props) {
         const x = e.clientX - targetButton.left
         const y = e.clientY - targetButton.top
 
-        if (context.isPointInPath(path, x, y)) {
+        if (context.isPointInPath(path, x, y))
             changeStatus('')
-        }
     }
 
     return (

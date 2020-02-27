@@ -43,7 +43,7 @@ export default function Game(props) {
     //useffect on socket
     useEffect(() => {
         var removeFire;
-        socket.on('bombmsg', (bomb) => {
+        socket.on('bombmsg', bomb => {
             let type = bomb.shift()
             let playerIndex = bomb.shift()
             if (type === 'BOMB TARGETS') {
