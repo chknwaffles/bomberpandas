@@ -6,7 +6,7 @@
     A Bomberman clone, 2D maze-like player vs player game.
     <br>
     
-    ![BomberPandas Demo](bomberpandas-demo1.gif)
+    [Imgur](https://i.imgur.com/tTOTfaO.gifv)
 </p>
 
 ## Getting Started
