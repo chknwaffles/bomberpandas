@@ -143,7 +143,6 @@ export default function Game(props) {
                         if (!online) {
                             let targetPlayer = players.find(player => player.x === colE.x && player.y === colE.y)
                             setTimeout(() => changeStatus(prevStatus => (prevStatus = (targetPlayer.id === 1) ? 'endgame2' : 'endgame1')), 4000)
-                            alert(`Player ${targetPlayer.id} has died!`)
                             break
                         }
                         //disable key functions for the player that died

@@ -30,11 +30,11 @@ function App() {
                                     />
             case 'profile': return <Profile changePage={changePage} user={user} />
             case 'about': break;
-            case 'logout': logOut(); break;
             default: return <GameContainer 
                                 user={user}
                                 changePage={changePage}
                                 backendUrl={backendUrl}
+                                logOut={logOut}
                             />
         }
     }
@@ -55,7 +55,7 @@ function App() {
             setPage('')
         })
         .catch(err => {
-            alert('Username already registered')
+            alert(`${err}`)
         })
     }
 
@@ -64,8 +64,8 @@ function App() {
         .then(r => r.json())
         .then(data => {
             console.log('logging out')
-            setUser('')
             setPage('')
+            setUser('')
         })
     }
 

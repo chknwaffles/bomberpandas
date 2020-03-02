@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from 'react'
 import Modal from 'react-modal'
 import './GameMenu.css'
 
+Modal.setAppElement('body')
+
 export default function GameMenu(props) {
-    const { user, changeStatus, changePage, joinGame, playGame } = props
+    const { user, changeStatus, changePage, joinGame, playGame, logOut } = props
     const [paths, setPaths] = useState([])
     const [visible, setVisible] = useState(false)
     const canvasRef = useRef(null)
@@ -77,7 +79,7 @@ export default function GameMenu(props) {
                     }
                     case 2: setVisible(true); break;
                     case 3: changePage((user === '') ? 'login' : 'profile'); break;
-                    case 4: changePage((user === '') ? 'signup' : 'logout'); break;
+                    case 4: logOut(); break;
                     default: break;
                 }
             }

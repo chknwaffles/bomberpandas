@@ -5,10 +5,7 @@ export default function FormContainer(props) {
     const { login, changePage, handleForm } = props
     const [fields, setFields] = useState({ username: '', password: '' })
 
-    const handleChange = (e) => {
-        setFields({...fields, [e.target.id]: e.target.value })
-        console.log(fields)
-    }
+    const handleChange = (e) => setFields({...fields, [e.target.id]: e.target.value })
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -24,7 +21,7 @@ export default function FormContainer(props) {
                 <input type='text' id='username' value={fields.username} onChange={(e) => handleChange(e)} />
 
                 <label className='password-label'>Password:</label>
-                <input type='text' id='password' value={fields.password} onChange={(e) => handleChange(e)} />
+                <input type='password' id='password' value={fields.password} onChange={(e) => handleChange(e)} />
 
                 <input type='submit' className='submit-button' value={login ? 'Login' : 'Sign Up'} />
                 <button type='button' className='back-to-menu'  onClick={() => changePage('')} > Back to Menu </button>

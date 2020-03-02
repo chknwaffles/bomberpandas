@@ -6,7 +6,7 @@ import EndGame from './EndGame'
 import Game from './Game'
 
 export default function GameContainer(props) {
-    const { user, changePage, backendUrl } = props
+    const { user, changePage, backendUrl, logOut } = props
     const [status, setStatus] = useState('')
     const [game, setGame] = useState({ status: 'open' })
     const socket = useContext(SocketContext)
@@ -84,6 +84,7 @@ export default function GameContainer(props) {
                                 changePage={changePage}
                                 playGame={playGame}
                                 joinGame={joinGame}
+                                logOut={logOut}
                             />
         }
     }

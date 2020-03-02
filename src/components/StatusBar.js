@@ -4,17 +4,11 @@ import bomb from '../images/bombicon.png'
 import fire from '../images/firepowerupicon.png'
 
 function playerStatusProps(prevProps, nextProps) {
-    if (prevProps.player.id === 1) {
-        console.log(prevProps.player.powerups)
-        console.log(nextProps.player.powerups)
-    }
-
     return prevProps.player.powerups === nextProps.player.powerups
 }
 
 function StatusBar(props) {
     const { player } = props
-    console.log(player)
     const canvasRef = useRef(null)
 
     useEffect(() => {

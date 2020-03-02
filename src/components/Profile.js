@@ -12,15 +12,16 @@ export default function Profile(props) {
         const menuPath = new Path2D()
         const buttonSize = [580, 150]
         
-        context.font = '30px Helvetica'
-        context.fillText('Profile', 120, 150)
-        context.fillText(`${user}`, 120, 200)
+        context.font = '40px ArcadeClassic'
+        context.fillText(`${user}'s  Profile`, 80, 80)
+        context.fillText(`Online  Wins:  ${user.wins || 0}`, 80, 130)
+        context.fillText(`Local  Wins:  ${user.localWins || 0}`, 80, 180)
 
         context.lineWidth = 4
         menuPath.rect(75, 480, buttonSize[0], buttonSize[1])
-        context.strokeStyle = 'gray'
+        context.strokeStyle = 'darkred'
         context.strokeRect(75, 480, buttonSize[0], buttonSize[1])
-        context.font = '50px Helvetica'
+        context.font = '50px ArcadeClassic'
         context.fillText('back to menu', 120, 580)
 
         setPath(menuPath)

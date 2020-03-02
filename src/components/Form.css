@@ -34,6 +34,21 @@ input[type=text], select {
     cursor: crosshair;
 }
 
+input[type=password], select {
+    font-family: ArcadeClassic;
+    font-size: 2em;
+    width: 100%;
+    background-color: gray;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 0px 2px black inset;
+    cursor: crosshair;
+}
+
 input[type=submit] {
     font-family: ArcadeClassic;
     font-size: 2em;
