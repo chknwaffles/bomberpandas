@@ -1,11 +1,13 @@
 <h3 align="center">Bomber Pandas</h3>
 
 <p align="center">
-    <a href="url">Demo</a>
+    <a href="https://youtu.be/KLLobgqyARg">Demo</a>
     <br>
     A Bomberman clone, 2D maze-like player vs player game.
     <br>
 </p>
+
+![BomberPandas Demo](bomberpandas-demo1.gif)
 
 ## Getting Started
 ### Prerequisites
@@ -34,11 +36,6 @@ Fireball: Increase radius of bomb explosion by 1 tile
 Bomb: Increase the amount of bombs you can place down
 
 
-
-Full app demo available here:
-```
-```
-
 ## Built Using
 - [MongoDB](https://www.mongodb.com/) - Database
 - [Express](https://expressjs.com/) - Server Framework
@@ -46,4 +43,4 @@ Full app demo available here:
 - [NodeJs](https://nodejs.org/en/) - Server Environment
 
 ## TODO
-- Realtime 4-player multiplayer
+- Realtime head to head multiplayer
