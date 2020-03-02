@@ -36,11 +36,6 @@ Fireball: Increase radius of bomb explosion by 1 tile
 Bomb: Increase the amount of bombs you can place down
 
 
-
-Full app demo available here:
-```
-```
-
 ## Built Using
 - [MongoDB](https://www.mongodb.com/) - Database
 - [Express](https://expressjs.com/) - Server Framework
@@ -48,4 +43,4 @@ Full app demo available here:
 - [NodeJs](https://nodejs.org/en/) - Server Environment
 
 ## TODO
-- Realtime 4-player multiplayer
+- Realtime head to head multiplayer
