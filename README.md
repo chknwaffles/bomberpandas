@@ -7,7 +7,7 @@
     <br>
 </p>
 
-![BomberPandas Demo](https://i.imgur.com/tTOTfaO.gifv)
+![BomberPandas Demo](bomberpandas-demo1.gif)
 
 ## Getting Started
 ### Prerequisites
