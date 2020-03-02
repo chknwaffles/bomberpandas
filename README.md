@@ -1,7 +1,7 @@
 <h3 align="center">Bomber Pandas</h3>
 
 <p align="center">
-    <a href="url">Demo</a>
+    <a href="https://youtu.be/KLLobgqyARg">Demo</a>
     <br>
     A Bomberman clone, 2D maze-like player vs player game.
     <br>
